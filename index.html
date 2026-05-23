@@ -6,145 +6,184 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Español Almería">
-<meta name="theme-color" content="#1a2e1a">
+<meta name="theme-color" content="#1B4E78">
 <title>Español Almería</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green: #2d5a27;
-  --green-light: #4a8c3f;
-  --green-pale: #e8f0e6;
-  --sand: #f5f0e8;
-  --sand-dark: #e8dfc8;
-  --terracotta: #c4622d;
-  --terracotta-light: #e87d4a;
-  --sky: #4a8fa8;
-  --text: #1a1a1a;
-  --text-muted: #666;
-  --white: #fff;
-  --radius: 16px;
-  --radius-sm: 10px;
+  --cobalt:    #1B4E78;
+  --cobalt2:   #2A7FB5;
+  --cobalt3:   #5AAAC8;
+  --cobalt-lt: #A8CDE0;
+  --white:     #F8F5F0;
+  --white2:    #EDE8DF;
+  --terra:     #C4622D;
+  --terra2:    #E8A020;
+  --sand:      #D4A45A;
+  --sand-lt:   #F0E8D0;
+  --sand-dk:   #9A6428;
+  --bougain:   #D4276A;
+  --bougain2:  #E8507A;
+  --lavender:  #8899BB;
+  --text:      #1A2A3A;
+  --text-md:   #4A5A6A;
+  --text-lt:   #8A9AAA;
+  --radius:    18px;
+  --radius-sm: 12px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:#000000;color:var(--text)}
 
-/* NAV */
-.nav { display: flex; background: var(--green); padding: 52px 0 0; }
-.nav-tab { flex: 1; padding: 12px 4px 14px; text-align: center; font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; transition: color 0.2s; letter-spacing: 0.04em; text-transform: uppercase; border: none; background: none; }
-.nav-tab.active { color: #fff; position: relative; }
-.nav-tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: #8fcf7a; border-radius: 2px; }
-.nav-icon { font-size: 20px; display: block; margin-bottom: 3px; }
+/* ── NAV ── */
+.nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:48px 0 0;border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
+.nav-tab{flex:1;padding:10px 4px 13px;text-align:center;font-size:10px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:none;letter-spacing:0.06em;text-transform:uppercase;position:relative;transition:color 0.2s}
+.nav-tab.active{color:#fff}
+.nav-tab.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2.5px;background:var(--terra2);border-radius:2px}
+.nav-icon{font-size:19px;display:block;margin-bottom:2px}
 
-/* SCREENS */
-.screen { display: none; flex-direction: column; height: calc(100vh - 88px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.screen.active { display: flex; }
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;height:calc(100vh - 86px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
+.screen.active{display:flex}
 
-/* ── TODAY SCREEN ── */
-.today-header { background: var(--green); padding: 20px 20px 28px; color: white; }
-.today-header h1 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 600; margin-bottom: 4px; }
-.today-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.65); }
-.streak-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; }
-.streak-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #8fcf7a; }
-.streak-label { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.3; }
-.progress-wrap { padding: 16px 20px 8px; }
-.progress-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.progress-top span { font-size: 13px; color: var(--text-muted); }
-.progress-top strong { font-size: 15px; color: var(--text); }
-.progress-bar { height: 8px; background: var(--sand-dark); border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--green-light), #8fcf7a); border-radius: 99px; transition: width 0.4s ease; }
-.daily-count-row { display: flex; align-items: center; gap: 10px; padding: 0 20px 16px; }
-.daily-count-row label { font-size: 13px; color: var(--text-muted); flex: 1; }
-.count-control { display: flex; align-items: center; gap: 8px; }
-.count-btn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--green); background: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 600; }
-.count-val { font-size: 15px; font-weight: 500; min-width: 28px; text-align: center; }
-.card-stack { padding: 0 20px 20px; flex: 1; display: flex; flex-direction: column; }
+/* ── TODAY HEADER ── */
+.today-header{background:var(--topbar-color,#5AAAC8);padding:18px 20px 24px;color:#fff;position:relative;overflow:hidden;transition:background 1s ease}
+.today-header::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.today-header::after{content:'';position:absolute;right:20px;bottom:-40px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.today-header h1{font-family:'Poppins',sans-serif;font-size:22px;font-weight:600;margin-bottom:3px;position:relative}
+.today-header .sub{font-size:12px;color:rgba(255,255,255,0.55);position:relative}
+.streak-row{display:flex;align-items:center;gap:10px;margin-top:14px;background:rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;position:relative;border:1px solid rgba(255,255,255,0.1)}
+.streak-num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:600;color:var(--terra2);line-height:1}
+.streak-info{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5}
+.streak-info strong{display:block;font-size:13px;color:#fff}
 
-/* FLASHCARD */
-.flashcard { background: var(--white); border-radius: var(--radius); padding: 28px 24px 22px; flex: 1; display: flex; flex-direction: column; box-shadow: 0 4px 24px rgba(0,0,0,0.08); position: relative; overflow: hidden; min-height: 260px; cursor: pointer; user-select: none; transition: transform 0.15s; }
-.flashcard:active { transform: scale(0.98); }
-.flashcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--green), #8fcf7a); }
-.card-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--terracotta); font-weight: 500; margin-bottom: 14px; }
-.card-es { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600; line-height: 1.35; color: var(--text); margin-bottom: 10px; }
-.card-kw { display: inline-block; background: var(--green-pale); color: var(--green); font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 500; margin-bottom: 16px; }
-.card-en { font-size: 16px; color: var(--text-muted); line-height: 1.5; padding-top: 14px; border-top: 1px solid #f0ebe0; display: none; }
-.card-en.visible { display: block; }
-.card-tap-hint { font-size: 12px; color: #bbb; text-align: center; margin-top: auto; padding-top: 16px; }
-.card-actions { display: flex; gap: 10px; margin-top: 14px; }
-.card-actions.hidden { display: none; }
-.btn-knew { flex: 1; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.btn-again { flex: 1; background: none; color: var(--terracotta); border: 1.5px solid var(--terracotta); border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.audio-btn { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: var(--sand); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.done-state { text-align: center; padding: 40px 20px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.done-state .done-icon { font-size: 56px; margin-bottom: 16px; }
-.done-state h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
-.done-state p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
-.btn-primary { background: var(--green); color: white; border: none; border-radius: var(--radius-sm); padding: 14px 28px; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 20px; font-family: 'DM Sans', sans-serif; }
+/* ── PROGRESS ── */
+.prog-wrap{padding:14px 20px 6px;background:#000000}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.prog-top span{font-size:12px;color:rgba(255,255,255,0.5)}
+.prog-top strong{font-size:14px;color:#fff;font-weight:500}
+.prog-bar{height:7px;background:rgba(255,255,255,0.12);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--terra2);border-radius:99px;transition:width 0.5s ease}
 
-/* ── BROWSE SCREEN ── */
-.browse-search { padding: 16px 20px 8px; position: sticky; top: 0; background: var(--sand); z-index: 10; }
-.search-input { width: 100%; padding: 11px 16px; border: 1.5px solid var(--sand-dark); border-radius: 12px; font-size: 15px; background: white; color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; }
-.search-input:focus { border-color: var(--green-light); }
-.cat-pills { display: flex; gap: 8px; overflow-x: auto; padding: 8px 20px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.cat-pills::-webkit-scrollbar { display: none; }
-.cat-pill { white-space: nowrap; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--sand-dark); font-size: 12px; cursor: pointer; background: white; color: var(--text-muted); font-family: 'DM Sans', sans-serif; flex-shrink: 0; }
-.cat-pill.active { background: var(--green); color: white; border-color: var(--green); }
-.browse-list { padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
-.browse-card { background: white; border-radius: var(--radius-sm); padding: 14px 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
-.browse-card .es { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
-.browse-card .en { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-.browse-card-foot { display: flex; align-items: center; gap: 8px; }
-.bc-cat { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
-.bc-kw { font-size: 11px; color: var(--green); background: var(--green-pale); padding: 2px 8px; border-radius: 10px; }
-.bc-audio { margin-left: auto; font-size: 18px; background: none; border: none; cursor: pointer; padding: 4px; }
-.browse-count { padding: 0 20px 6px; font-size: 13px; color: var(--text-muted); }
+/* ── DAILY COUNT ── */
+.daily-row{display:flex;align-items:center;padding:10px 20px 14px;background:#000000;border-bottom:1px solid rgba(255,255,255,0.08)}
+.daily-row label{font-size:13px;color:rgba(255,255,255,0.6);flex:1}
+.cnt-ctrl{display:flex;align-items:center;gap:10px}
+.cnt-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.4);background:none;font-size:16px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;line-height:1}
+.cnt-val{font-size:15px;font-weight:500;min-width:26px;text-align:center;color:#fff}
 
-/* ── SETTINGS SCREEN ── */
-.settings-wrap { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-.settings-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: 0 1px 8px rgba(0,0,0,0.05); }
-.settings-card h3 { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 14px; color: var(--text); }
-.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f0e8; }
-.setting-row:last-child { border-bottom: none; }
-.setting-label { font-size: 14px; color: var(--text); }
-.setting-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.count-control-lg { display: flex; align-items: center; gap: 12px; }
-.count-btn-lg { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--green); background: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 600; }
-.count-val-lg { font-size: 18px; font-weight: 500; min-width: 32px; text-align: center; }
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stat-box { background: var(--sand); border-radius: 12px; padding: 14px; text-align: center; }
-.stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--green); }
-.stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.btn-danger { background: none; color: var(--terracotta); border: 1.5px solid var(--terracotta); border-radius: var(--radius-sm); padding: 12px 20px; font-size: 14px; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif; margin-top: 4px; }
-.install-box { background: var(--green-pale); border-radius: var(--radius); padding: 18px 20px; border-left: 4px solid var(--green); }
-.install-box h3 { font-size: 15px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
-.install-box ol { padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 2; }
+/* ── CARD AREA ── */
+.card-area{flex:1;padding:14px 16px 16px;display:flex;flex-direction:column}
 
-/* CAT COLORS */
-.cc-beach { background: #deeef7; color: #185FA5; }
-.cc-restaurant { background: #faeeda; color: #854F0B; }
-.cc-bar { background: #fbeaf0; color: #993556; }
-.cc-neighbours { background: #eaf3de; color: #3B6D11; }
-.cc-gym { background: #faece7; color: #993C1D; }
-.cc-shops { background: #eeedfe; color: #534AB7; }
-.cc-transport { background: #f1efe8; color: #5F5E5A; }
-.cc-home { background: #e1f5ee; color: #0F6E56; }
-.cc-general { background: #f1efe8; color: #444441; }
-.cc-weather { background: #deeef7; color: #0C447C; }
-.cc-health { background: #fcebeb; color: #A32D2D; }
-.cc-social { background: #faeeda; color: #633806; }
+/* ── FLASHCARD ── */
+.flashcard{border-radius:var(--radius);overflow:hidden;flex:1;display:flex;flex-direction:column;position:relative;min-height:280px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,0.35);user-select:none;transition:transform 0.12s;background:#fff}
+.flashcard:active{transform:scale(0.985)}
+.card-img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center;display:none}
+.card-img-placeholder{display:none}
+.card-overlay{display:none}
+.card-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:20px 20px 18px}
+.card-cat-badge{align-self:flex-start;font-size:10px;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600}
+.card-audio{position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:50%;background:var(--white2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.card-audio:active{transform:scale(0.9)}
+.card-body{margin-top:auto}
+.card-es{font-family:'Poppins',sans-serif;font-size:22px;font-weight:600;color:#000;line-height:1.3;margin-bottom:8px;text-shadow:none}
+.card-kw{display:inline-block;background:#f0e8d0;color:#000;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;margin-bottom:12px;font-family:'Poppins',sans-serif}
+.card-en{font-family:'Poppins',sans-serif;font-size:14px;font-weight:400;color:#111;line-height:1.55;padding-top:12px;border-top:1px solid var(--white2);display:none}
+.card-en.show{display:block}
+.card-hint{font-size:11px;color:#444;text-align:center;padding:10px 0 0;font-family:'DM Sans',sans-serif}
+.card-actions{display:none;gap:10px;padding-top:12px}
+.card-actions.show{display:flex}
+.btn-again{flex:1;background:#fff;color:var(--terra);border:1.5px solid var(--terra);border-radius:var(--radius-sm);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.btn-knew{flex:1;background:var(--cobalt);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
 
-/* SWIPE ANIMATION */
-.flashcard.swipe-right { animation: swipeRight 0.3s forwards; }
-.flashcard.swipe-left { animation: swipeLeft 0.3s forwards; }
-@keyframes swipeRight { to { transform: translateX(120%) rotate(12deg); opacity: 0; } }
-@keyframes swipeLeft { to { transform: translateX(-120%) rotate(-12deg); opacity: 0; } }
+/* ── DONE STATE ── */
+.done-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:#000000}
+.done-icon{font-size:60px;margin-bottom:16px}
+.done-state h2{font-family:'Poppins',sans-serif;font-size:24px;color:#fff;margin-bottom:10px;font-weight:600}
+.done-state p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;max-width:280px}
+.btn-primary{background:var(--terra2);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;margin-top:22px;font-family:'Poppins',sans-serif}
+
+/* card swipe anims */
+.swipe-r{animation:swR 0.28s forwards}
+.swipe-l{animation:swL 0.28s forwards}
+@keyframes swR{to{transform:translateX(110%) rotate(10deg);opacity:0}}
+@keyframes swL{to{transform:translateX(-110%) rotate(-10deg);opacity:0}}
+
+/* ── BROWSE ── */
+#screen-browse{overflow:hidden;display:none;flex-direction:column}
+#screen-browse.active{display:flex}
+.browse-header{flex-shrink:0;background:#fff;border-bottom:1px solid var(--white2);z-index:10}
+.browse-top{padding:12px 16px 6px}
+.search-box{width:100%;padding:10px 14px;border:1.5px solid var(--white2);border-radius:var(--radius-sm);font-size:15px;background:var(--white2);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.search-box:focus{border-color:var(--cobalt2);background:var(--white)}
+.cat-pills{display:flex;gap:7px;overflow-x:auto;padding:8px 16px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.cat-pills::-webkit-scrollbar{display:none}
+.cat-pill{white-space:nowrap;padding:5px 13px;border-radius:20px;border:1.5px solid var(--white2);font-size:12px;cursor:pointer;background:var(--white);color:var(--text-md);font-family:'DM Sans',sans-serif;flex-shrink:0;transition:all 0.15s}
+.cat-pill.active{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+.browse-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
+.browse-count{padding:8px 16px;font-size:12px;color:rgba(255,255,255,0.5);background:#000000}
+.browse-list{padding:8px 16px 20px;display:flex;flex-direction:column;gap:10px}
+.bc{background:var(--white);border-radius:var(--radius-sm);overflow:hidden;box-shadow:0 2px 8px rgba(27,78,120,0.07)}
+.bc-img-wrap{height:130px;position:relative;overflow:hidden;background:#000000}
+.bc-img{width:100%;height:100%;object-fit:cover}
+.bc-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--cobalt) 0%,var(--cobalt3) 60%,var(--sand) 100%)}
+.bc-body{padding:12px 14px 10px}
+.bc-num{font-size:10px;color:var(--cobalt3);font-weight:600;margin-bottom:3px;letter-spacing:0.05em;text-transform:uppercase}
+.bc-es{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--cobalt);margin-bottom:3px;line-height:1.3}
+.bc-en{font-family:'Poppins',sans-serif;font-size:13px;font-weight:400;color:var(--text-md);margin-bottom:8px;line-height:1.4}
+.bc-foot{display:flex;align-items:center;gap:7px}
+.bc-cat{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;letter-spacing:0.04em}
+.bc-kw{font-size:10px;color:var(--cobalt2);background:#E0EEF7;padding:2px 8px;border-radius:10px}
+.bc-audio{margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;padding:4px 2px}
+
+/* cat colours */
+.cc-beach{background:#D5EAF5;color:#185FA5}
+.cc-restaurant{background:#FBF0DC;color:#854F0B}
+.cc-bar{background:#FBEAF0;color:#993556}
+.cc-neighbours{background:#EAF3DE;color:#3B6D11}
+.cc-gym{background:#FAECE7;color:#993C1D}
+.cc-shops{background:#EEEDFE;color:#534AB7}
+.cc-transport{background:#F1EFE8;color:#5F5E5A}
+.cc-home{background:#E1F5EE;color:#0F6E56}
+.cc-general{background:#EEE8F5;color:#5A3A7A}
+.cc-weather{background:#D5EAF5;color:#0C447C}
+.cc-health{background:#FCEBEB;color:#A32D2D}
+.cc-social{background:#FFF0D5;color:#7A4500}
+
+/* ── SETTINGS ── */
+.settings-wrap{padding:18px 16px 30px;display:flex;flex-direction:column;gap:14px;background:#000000}
+.s-card{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
+.s-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);margin-bottom:14px;font-weight:600}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--white2)}
+.s-row:last-child{border:none}
+.s-label{font-size:14px;color:var(--text)}
+.s-sub{font-size:11px;color:var(--text-lt);margin-top:2px}
+.cnt-ctrl-lg{display:flex;align-items:center;gap:12px}
+.cnt-btn-lg{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--cobalt2);background:none;font-size:18px;color:var(--cobalt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600}
+.cnt-val-lg{font-size:18px;font-weight:500;min-width:30px;text-align:center;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:var(--white2);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:600;color:var(--cobalt)}
+.stat-lbl{font-size:11px;color:var(--text-lt);margin-top:2px}
+.toggle-wrap{position:relative;display:inline-block;width:44px;height:26px}
+.toggle-wrap input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:26px;transition:0.3s}
+.toggle-thumb{position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
+.install-box{background:linear-gradient(135deg,#E8F2FA,#D5EAF5);border-radius:var(--radius);padding:18px;border-left:4px solid var(--cobalt2)}
+.install-box h3{font-size:14px;font-weight:600;color:var(--cobalt);margin-bottom:10px}
+.install-box ol{padding-left:18px;font-size:13px;color:var(--text-md);line-height:2.1}
+.btn-danger{background:none;color:var(--terra);border:1.5px solid var(--terra);border-radius:var(--radius-sm);padding:12px 20px;font-size:14px;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;margin-top:4px}
+.img-note{background:linear-gradient(135deg,#FFF8E8,#FFF0D0);border-radius:var(--radius);padding:16px 18px;border-left:4px solid var(--terra2)}
+.img-note h3{font-size:13px;font-weight:600;color:var(--sand-dk);margin-bottom:6px}
+.img-note p{font-size:12px;color:var(--text-md);line-height:1.7}
+.img-note code{font-size:11px;background:rgba(0,0,0,0.07);padding:1px 5px;border-radius:4px}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <button class="nav-tab active" onclick="showScreen('today')" id="tab-today">
-    <span class="nav-icon">☀️</span>Today
+    <span class="nav-icon">☀️</span>Hoy
   </button>
   <button class="nav-tab" onclick="showScreen('browse')" id="tab-browse">
     <span class="nav-icon">📚</span>Browse
@@ -157,86 +196,85 @@ html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif;
 <!-- TODAY -->
 <div class="screen active" id="screen-today">
   <div class="today-header">
-    <h1>Buenos días 🌞</h1>
-    <div class="subtitle" id="today-date"></div>
+    <h1 id="greeting">Buenos días ☀️</h1>
+    <div class="sub" id="today-date"></div>
     <div class="streak-row">
-      <div class="streak-val" id="streak-val">0</div>
-      <div class="streak-label">day streak<br><span style="font-size:11px;opacity:0.6">keep it going!</span></div>
+      <div class="streak-num" id="streak-val">0</div>
+      <div class="streak-info"><strong>día de racha 🔥</strong>sigue así — keep it going!</div>
     </div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-top">
-      <span>Today's progress</span>
-      <strong id="progress-text">0 / 0</strong>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="prog-wrap">
+    <div class="prog-top"><span>Today's progress</span><strong id="prog-text">0 / 0</strong></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
-  <div class="daily-count-row">
+  <div class="daily-row">
     <label>Cards per day</label>
-    <div class="count-control">
-      <button class="count-btn" onclick="adjustDaily(-5)">−</button>
-      <span class="count-val" id="daily-display">20</span>
-      <button class="count-btn" onclick="adjustDaily(5)">+</button>
+    <div class="cnt-ctrl">
+      <button class="cnt-btn" onclick="adjDaily(-5)">−</button>
+      <span class="cnt-val" id="daily-disp">20</span>
+      <button class="cnt-btn" onclick="adjDaily(5)">+</button>
     </div>
   </div>
-  <div class="card-stack" id="card-stack"></div>
+  <div class="card-area" id="card-area"></div>
 </div>
 
 <!-- BROWSE -->
 <div class="screen" id="screen-browse">
-  <div class="browse-search">
-    <input type="search" class="search-input" placeholder="Search Spanish or English…" id="browse-search" oninput="renderBrowse()">
+  <div class="browse-header">
+    <div class="browse-top">
+      <input class="search-box" type="search" placeholder="Search Spanish or English…" id="browse-q" oninput="renderBrowse()">
+    </div>
+    <div class="cat-pills" id="cat-pills"></div>
   </div>
-  <div class="cat-pills" id="cat-pills"></div>
-  <div class="browse-count" id="browse-count"></div>
-  <div class="browse-list" id="browse-list"></div>
+  <div class="browse-scroll">
+    <div class="browse-count" id="browse-count"></div>
+    <div class="browse-list" id="browse-list"></div>
+  </div>
 </div>
 
 <!-- SETTINGS -->
 <div class="screen" id="screen-settings">
   <div class="settings-wrap">
-    <div class="settings-card">
+    <div class="s-card">
       <h3>Daily goal</h3>
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">Cards per session</div>
-          <div class="setting-sub">Adjust how many you review daily</div>
-        </div>
-        <div class="count-control-lg">
-          <button class="count-btn-lg" onclick="adjustDaily(-5)">−</button>
-          <span class="count-val-lg" id="daily-display-lg">20</span>
-          <button class="count-btn-lg" onclick="adjustDaily(5)">+</button>
+      <div class="s-row">
+        <div><div class="s-label">Cards per session</div><div class="s-sub">Tap − / + to adjust</div></div>
+        <div class="cnt-ctrl-lg">
+          <button class="cnt-btn-lg" onclick="adjDaily(-5)">−</button>
+          <span class="cnt-val-lg" id="daily-disp-lg">20</span>
+          <button class="cnt-btn-lg" onclick="adjDaily(5)">+</button>
         </div>
       </div>
     </div>
-    <div class="settings-card">
+    <div class="s-card">
       <h3>Your progress</h3>
       <div class="stat-grid" id="stat-grid"></div>
     </div>
-    <div class="settings-card">
+    <div class="s-card">
       <h3>Audio</h3>
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">Auto-play audio</div>
-          <div class="setting-sub">Speak card when it appears</div>
-        </div>
-        <label style="position:relative;display:inline-block;width:44px;height:26px">
-          <input type="checkbox" id="autoplay-toggle" style="opacity:0;width:0;height:0" onchange="saveSettings()">
-          <span style="position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:26px;transition:0.3s" id="toggle-track"></span>
-          <span style="position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s" id="toggle-thumb"></span>
+      <div class="s-row">
+        <div><div class="s-label">Auto-play on card load</div><div class="s-sub">Speaks Spanish when card appears</div></div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="auto-toggle" onchange="saveSettings()">
+          <span class="toggle-track" id="tog-track"></span>
+          <span class="toggle-thumb" id="tog-thumb"></span>
         </label>
       </div>
+    </div>
+    <div class="img-note">
+      <h3>📸 Adding your watercolour images</h3>
+      <p>Upload your 12 generated images to your GitHub repo alongside <code>index.html</code>. Name them exactly: <code>img-beach.png</code>, <code>img-bar.png</code>, <code>img-restaurant.png</code>, <code>img-neighbours.png</code>, <code>img-gym.png</code>, <code>img-shops.png</code>, <code>img-transport.png</code>, <code>img-home.png</code>, <code>img-weather.png</code>, <code>img-health.png</code>, <code>img-social.png</code>, <code>img-general.png</code>. They'll appear automatically.</p>
     </div>
     <div class="install-box">
       <h3>📱 Add to iPhone home screen</h3>
       <ol>
         <li>Open this page in <strong>Safari</strong></li>
-        <li>Tap the <strong>Share</strong> button (box with arrow)</li>
-        <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+        <li>Tap the <strong>Share</strong> button ↑</li>
+        <li>Tap <strong>"Add to Home Screen"</strong></li>
         <li>Tap <strong>Add</strong> — done!</li>
       </ol>
     </div>
-    <div class="settings-card">
+    <div class="s-card">
       <h3>Reset</h3>
       <button class="btn-danger" onclick="confirmReset()">Reset all progress</button>
     </div>
@@ -244,7 +282,9 @@ html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif;
 </div>
 
 <script>
-const CAT_LABELS={beach:"🏖 Beach",restaurant:"🍽 Restaurant",bar:"🍺 Bar",neighbours:"👋 Neighbours",gym:"💪 Gym",shops:"🛒 Shops",transport:"🚌 Transport",home:"🏠 Home",general:"💬 General",weather:"☀️ Weather",health:"🏥 Health",social:"🎉 Social"};
+const CAT={beach:"🏖 Beach",restaurant:"🍽 Restaurant",bar:"🍺 Bar",neighbours:"👋 Neighbours",gym:"💪 Gym",shops:"🛒 Shops",transport:"🚌 Transport",home:"🏠 Home",general:"💬 General",weather:"☀️ Weather",health:"🏥 Health",social:"🎉 Social"};
+const IMGS={beach:"img-beach.png",restaurant:"img-restaurant.png",bar:"img-bar.png",neighbours:"img-neighbours.png",gym:"img-gym.png",shops:"img-shops.png",transport:"img-transport.png",home:"img-home.png",general:"img-general.png",weather:"img-weather.png",health:"img-health.png",social:"img-social.png"};
+const IMG_LOADED={};
 
 const ALL=[
 ["Hay sitio en la arena aquí.","There's a spot on the sand here.","sitio","beach"],
@@ -271,6 +311,27 @@ const ALL=[
 ["Los niños están jugando en la orilla.","The children are playing at the shore.","orilla","beach"],
 ["Nos quedaremos hasta el atardecer.","We'll stay until sunset.","atardecer","beach"],
 ["El salvavidas está atento.","The lifeguard is paying attention.","salvavidas","beach"],
+["¿Puedo dejar mis cosas aquí mientras nado?","Can I leave my things here while I swim?","dejar","beach"],
+["El fondo del mar es precioso aquí.","The seabed is beautiful here.","fondo","beach"],
+["¿Está permitido hacer surf en esta playa?","Is surfing allowed on this beach?","surf","beach"],
+["Voy a ponerme el bañador.","I'm going to put my swimsuit on.","bañador","beach"],
+["¿Tienes una toalla de sobra?","Do you have a spare towel?","toalla","beach"],
+["El agua está muy transparente hoy.","The water is very clear today.","transparente","beach"],
+["¿Hay aparcamiento cerca de la playa?","Is there parking near the beach?","aparcamiento","beach"],
+["Me encanta este rincón de la playa.","I love this spot on the beach.","rincón","beach"],
+["¿A qué hora recogen las hamacas?","What time do they collect the sun loungers?","hamacas","beach"],
+["El chiringuito cierra a las doce.","The beach bar closes at twelve.","cierra","beach"],
+["¿Puedes echarme crema en la espalda?","Can you put cream on my back?","echarme","beach"],
+["Voy a buscar conchas a la orilla.","I'm going to look for shells at the shore.","conchas","beach"],
+["El agua huele a sal y a verano.","The water smells of salt and summer.","huele","beach"],
+["Hay un socorrista en la torre.","There's a lifeguard in the tower.","socorrista","beach"],
+["¿Cuántos metros tiene esta cala?","How many metres is this cove?","cala","beach"],
+["Prefiero la sombra al sol directo.","I prefer the shade to direct sun.","sombra","beach"],
+["¿Puede traerme una cerveza fría?","Can you bring me a cold beer?","cerveza","beach"],
+["El sol pega muy fuerte a mediodía.","The sun beats down very hard at midday.","pega","beach"],
+["Voy a dar un paseo por la orilla.","I'm going for a walk along the shore.","paseo","beach"],
+["¿Tiene factor cincuenta esta crema?","Does this cream have factor fifty?","factor","beach"],
+["Se acerca una tormenta por el horizonte.","There's a storm approaching on the horizon.","horizonte","beach"],
 ["¿Tiene una mesa libre?","Do you have a free table?","mesa","restaurant"],
 ["Me gustaría reservar una mesa para dos.","I'd like to book a table for two.","reservar","restaurant"],
 ["¿Cuál es el plato del día?","What's the dish of the day?","plato","restaurant"],
@@ -295,6 +356,19 @@ const ALL=[
 ["Sin picante, por favor.","Without spice, please.","picante","restaurant"],
 ["Una ración de patatas bravas.","A portion of patatas bravas.","ración","restaurant"],
 ["Por favor, más aceite y vinagre.","More olive oil and vinegar please.","aceite","restaurant"],
+["¿Tienen mesa en la terraza para esta noche?","Do you have a terrace table for tonight?","terraza","restaurant"],
+["¿Me puede cambiar este plato? Está frío.","Can you change this dish? It's cold.","cambiar","restaurant"],
+["¿El arroz con leche es casero?","Is the rice pudding homemade?","casero","restaurant"],
+["¿Tienen vino de la tierra?","Do you have local wine?","tierra","restaurant"],
+["¿Me trae un poco más de agua?","Can you bring me a bit more water?","trae","restaurant"],
+["¿Qué lleva el gazpacho?","What's in the gazpacho?","lleva","restaurant"],
+["La propina no está incluida.","The tip is not included.","propina","restaurant"],
+["¿Puedo ver la carta de postres?","Can I see the dessert menu?","postres","restaurant"],
+["¿Cuánto tiempo de espera hay?","How long is the wait?","espera","restaurant"],
+["¿Tienen silla para niños?","Do you have a highchair?","silla","restaurant"],
+["El pulpo a la brasa estaba increíble.","The grilled octopus was incredible.","pulpo","restaurant"],
+["¿Me puede envolver esto para llevar?","Can you wrap this up to take away?","envolver","restaurant"],
+["¿Hay algo sin lactosa en el menú?","Is there anything lactose-free on the menu?","lactosa","restaurant"],
 ["Una caña, por favor.","A small beer, please.","caña","bar"],
 ["¿Tienen cerveza de barril?","Do you have draught beer?","barril","bar"],
 ["¿Qué tapas tienen hoy?","What tapas do you have today?","tapas","bar"],
@@ -316,6 +390,18 @@ const ALL=[
 ["¿Tiene música en directo esta noche?","Do you have live music tonight?","directo","bar"],
 ["¿Tienen cócteles de verano?","Do you have summer cocktails?","cócteles","bar"],
 ["Un agua mineral sin gas.","A still mineral water.","mineral","bar"],
+["¿Me puede dar el recibo?","Can you give me the receipt?","recibo","bar"],
+["¿Tienen aceitunas de aperitivo?","Do you have olives as a snack?","aceitunas","bar"],
+["¿Cuánto es todo?","How much is everything?","cuánto","bar"],
+["¿A qué hora abren por la mañana?","What time do you open in the morning?","abren","bar"],
+["¿Tienen vermut de grifo?","Do you have draught vermouth?","vermut","bar"],
+["Me pone una clara con limón.","Get me a shandy with lemon.","clara","bar"],
+["¿Tienen algo sin alcohol?","Do you have anything non-alcoholic?","alcohol","bar"],
+["¿Me puede poner unos cacahuetes?","Can you give me some peanuts?","cacahuetes","bar"],
+["¿Cobran por las tapas?","Do you charge for the tapas?","cobran","bar"],
+["Ponme un chupito de orujo.","Give me a shot of orujo.","chupito","bar"],
+["¿Tienen sidra natural?","Do you have natural cider?","sidra","bar"],
+["¿Me trae hielo para el vaso?","Can you bring me ice for the glass?","hielo","bar"],
 ["Buenos días, vecino.","Good morning, neighbour.","vecino","neighbours"],
 ["¿Cómo está la familia?","How is the family?","familia","neighbours"],
 ["Hace buen tiempo hoy, ¿verdad?","The weather is nice today, isn't it.","tiempo","neighbours"],
@@ -333,6 +419,20 @@ const ALL=[
 ["Hay que arreglar la puerta del portal.","The main door needs fixing.","portal","neighbours"],
 ["El jardín está muy cuidado.","The garden is very well kept.","jardín","neighbours"],
 ["Hasta luego, que tenga buen día.","Goodbye, have a good day.","luego","neighbours"],
+["¿Sabe a qué hora viene el cartero?","Do you know what time the postman comes?","cartero","neighbours"],
+["¿Le importa si aparco aquí?","Do you mind if I park here?","aparco","neighbours"],
+["¿Ha visto a mi gato por aquí?","Have you seen my cat around here?","gato","neighbours"],
+["¿Cuándo es la reunión de vecinos?","When is the residents' meeting?","reunión","neighbours"],
+["¿Le puedo dejar las llaves a usted?","Can I leave the keys with you?","llaves","neighbours"],
+["El fontanero viene mañana por la mañana.","The plumber is coming tomorrow morning.","fontanero","neighbours"],
+["¿Tiene el número del administrador?","Do you have the building manager's number?","administrador","neighbours"],
+["¿Sabe si hay obras esta semana?","Do you know if there are works this week?","obras","neighbours"],
+["Voy a estar fuera unos días.","I'm going to be away for a few days.","fuera","neighbours"],
+["¿Le puedo pedir un favor?","Can I ask you a favour?","favor","neighbours"],
+["Me alegra que seamos buenos vecinos.","I'm glad we're good neighbours.","alegra","neighbours"],
+["¿Ha recibido algún paquete mío?","Have you received any parcel for me?","paquete","neighbours"],
+["El portero automático no funciona.","The intercom isn't working.","portero","neighbours"],
+["Hay una avería en la luz del rellano.","There's a fault in the landing light.","avería","neighbours"],
 ["Quisiera hacerme socio.","I'd like to become a member.","socio","gym"],
 ["¿Cuánto cuesta la cuota mensual?","How much is the monthly fee?","cuota","gym"],
 ["¿Tienen clases de pilates?","Do you have pilates classes?","clases","gym"],
@@ -353,6 +453,20 @@ const ALL=[
 ["Vengo tres veces por semana.","I come three times a week.","veces","gym"],
 ["¿Tienen clases para principiantes?","Do you have beginner classes?","principiantes","gym"],
 ["El aire acondicionado está muy alto.","The air conditioning is on very high.","acondicionado","gym"],
+["¿Cuánto tiempo dura la clase de yoga?","How long does the yoga class last?","yoga","gym"],
+["¿Hay clase de zumba esta semana?","Is there a zumba class this week?","zumba","gym"],
+["¿Puedo traer a un amigo como invitado?","Can I bring a friend as a guest?","invitado","gym"],
+["¿Tienen servicio de fisioterapia?","Do you have a physiotherapy service?","fisioterapia","gym"],
+["¿A qué hora cierra el gimnasio los viernes?","What time does the gym close on Fridays?","viernes","gym"],
+["¿Puedo congelar la membresía un mes?","Can I freeze the membership for a month?","congelar","gym"],
+["Me duele la rodilla al correr.","My knee hurts when I run.","rodilla","gym"],
+["¿Tienen máquina de remo?","Do you have a rowing machine?","remo","gym"],
+["¿Dónde puedo estirar después del entrenamiento?","Where can I stretch after the workout?","estirar","gym"],
+["¿Tienen duchas con agua caliente?","Do you have showers with hot water?","duchas","gym"],
+["¿Está incluida la clase en la cuota?","Is the class included in the fee?","incluida","gym"],
+["¿Cuántos kilos tiene esta barra?","How many kilos does this bar weigh?","kilos","gym"],
+["Me gustaría hacer más ejercicio de fuerza.","I'd like to do more strength training.","fuerza","gym"],
+["¿Tienen zona de estiramientos?","Do you have a stretching area?","zona","gym"],
 ["¿Dónde está el supermercado más cercano?","Where is the nearest supermarket?","supermercado","shops"],
 ["¿Tiene pan de molde?","Do you have sliced bread?","pan","shops"],
 ["¿A qué hora cierra la tienda?","What time does the shop close?","cierra","shops"],
@@ -375,6 +489,18 @@ const ALL=[
 ["Busco un regalo para alguien.","I'm looking for a gift for someone.","regalo","shops"],
 ["¿Me puede poner doscientos gramos de jamón?","Can you give me two hundred grams of ham?","jamón","shops"],
 ["¿Tienen leche sin lactosa?","Do you have lactose-free milk?","lactosa","shops"],
+["¿Dónde está la sección de limpieza?","Where is the cleaning products section?","limpieza","shops"],
+["¿Tienen bolsas de tela?","Do you have fabric bags?","bolsas","shops"],
+["¿Puedo pagar en efectivo?","Can I pay in cash?","efectivo","shops"],
+["¿Cuánto cuesta el kilo de tomates?","How much is a kilo of tomatoes?","tomates","shops"],
+["¿Dónde están los congelados?","Where are the frozen foods?","congelados","shops"],
+["¿Tienen queso manchego?","Do you have manchego cheese?","queso","shops"],
+["¿Hay descuento por comprar varios?","Is there a discount for buying several?","descuento","shops"],
+["¿Dónde puedo encontrar la sal y las especias?","Where can I find the salt and spices?","especias","shops"],
+["¿Tienen vino local de Almería?","Do you have local Almería wine?","vino","shops"],
+["¿Puedo usar este cupón de descuento?","Can I use this discount coupon?","cupón","shops"],
+["¿Dónde están los productos de higiene?","Where are the hygiene products?","higiene","shops"],
+["¿Tienen pan recién hecho?","Do you have freshly made bread?","recién","shops"],
 ["¿Me lleva al centro, por favor?","Can you take me to the centre, please?","centro","transport"],
 ["¿Cuánto es la carrera?","How much is the fare?","carrera","transport"],
 ["¿Pasa el autobús por aquí?","Does the bus go through here?","autobús","transport"],
@@ -389,6 +515,19 @@ const ALL=[
 ["¿Cuál es la mejor ruta para evitar el tráfico?","What is the best route to avoid traffic?","tráfico","transport"],
 ["¿Dónde está el punto de carga eléctrico?","Where is the electric charging point?","carga","transport"],
 ["¿Dónde recojo el coche de alquiler?","Where do I collect the hire car?","alquiler","transport"],
+["¿Cada cuánto pasa el autobús?","How often does the bus come?","cada","transport"],
+["¿Este tren para en Mojácar?","Does this train stop at Mojácar?","para","transport"],
+["¿Cuánto cuesta el taxi al aeropuerto?","How much is the taxi to the airport?","taxi","transport"],
+["¿Dónde puedo comprar un billete de bus?","Where can I buy a bus ticket?","billete","transport"],
+["¿Hay tren directo a Granada?","Is there a direct train to Granada?","directo","transport"],
+["¿Me puede abrir el maletero?","Can you open the boot?","maletero","transport"],
+["¿Cuál es la línea de bus para el centro?","Which bus line goes to the centre?","línea","transport"],
+["¿Se puede ir andando desde aquí?","Can you walk from here?","andando","transport"],
+["¿Dónde puedo aparcar sin pagar?","Where can I park for free?","aparcar","transport"],
+["¿El bus llega puntual normalmente?","Does the bus usually arrive on time?","puntual","transport"],
+["¿Hay carril bici por aquí?","Is there a cycle lane around here?","carril","transport"],
+["¿Necesito hacer transbordo?","Do I need to change?","transbordo","transport"],
+["¿Cuál es la última salida del bus esta noche?","What is the last bus tonight?","última","transport"],
 ["¿Necesito hacer la cama yo?","Do I need to make the bed myself?","cama","home"],
 ["¿Dónde están las llaves de repuesto?","Where are the spare keys?","llaves","home"],
 ["No funciona el aire acondicionado.","The air conditioning isn't working.","acondicionado","home"],
@@ -403,6 +542,19 @@ const ALL=[
 ["El frigorífico hace mucho ruido.","The fridge makes a lot of noise.","frigorífico","home"],
 ["¿El contrato incluye los gastos?","Does the contract include bills?","contrato","home"],
 ["¿Puedo quedarme una semana más?","Can I stay for one more week?","quedarme","home"],
+["¿Dónde está el interruptor de la luz?","Where is the light switch?","interruptor","home"],
+["¿Hay plancha en el apartamento?","Is there an iron in the apartment?","plancha","home"],
+["¿Dónde está el contador de la luz?","Where is the electricity meter?","contador","home"],
+["El váter está atascado.","The toilet is blocked.","váter","home"],
+["¿Tienen aspiradora?","Do you have a vacuum cleaner?","aspiradora","home"],
+["¿Dónde tiro la basura orgánica?","Where do I throw the organic waste?","orgánica","home"],
+["¿Hay mosquiteras en las ventanas?","Are there mosquito nets on the windows?","mosquiteras","home"],
+["¿Cuándo viene la limpiadora?","When does the cleaner come?","limpiadora","home"],
+["¿Dónde está el botiquín?","Where is the first aid kit?","botiquín","home"],
+["¿Puedo usar la terraza por las noches?","Can I use the terrace at night?","terraza","home"],
+["¿Hay parking privado para el apartamento?","Is there private parking for the apartment?","parking","home"],
+["¿Dónde está la llave del gas?","Where is the gas tap?","llave","home"],
+["¿El apartamento tiene vistas al mar?","Does the apartment have sea views?","vistas","home"],
 ["¿Qué temperatura hace hoy?","What temperature is it today?","temperatura","weather"],
 ["Parece que va a llover.","It looks like it's going to rain.","llover","weather"],
 ["¡Qué calor hace!","It's so hot!","calor","weather"],
@@ -418,6 +570,16 @@ const ALL=[
 ["Está nublado pero no hace frío.","It's cloudy but not cold.","nublado","weather"],
 ["Esta semana habrá sol todos los días.","This week there will be sun every day.","sol","weather"],
 ["El atardecer esta noche será espectacular.","Tonight's sunset will be spectacular.","atardecer","weather"],
+["¿Cuántos grados hay a la sombra?","How many degrees is it in the shade?","grados","weather"],
+["El cielo está completamente despejado.","The sky is completely clear.","despejado","weather"],
+["Va a hacer mucho calor este fin de semana.","It's going to be very hot this weekend.","fin","weather"],
+["El mar está muy revuelto hoy.","The sea is very rough today.","revuelto","weather"],
+["¿Habrá niebla esta mañana?","Will there be fog this morning?","niebla","weather"],
+["La brisa del mar refresca mucho.","The sea breeze is very refreshing.","brisa","weather"],
+["¿Cuándo baja la temperatura por la noche?","When does the temperature drop at night?","baja","weather"],
+["Aquí llueve muy poco en verano.","It rains very little here in summer.","poco","weather"],
+["El viento ha cambiado de dirección.","The wind has changed direction.","dirección","weather"],
+["¿Cree que mejorará el tiempo mañana?","Do you think the weather will improve tomorrow?","mejorará","weather"],
 ["Necesito ver a un médico.","I need to see a doctor.","médico","health"],
 ["¿Dónde está el centro de salud?","Where is the health centre?","salud","health"],
 ["Me duele la cabeza mucho.","I have a bad headache.","cabeza","health"],
@@ -432,6 +594,18 @@ const ALL=[
 ["Me duele la garganta.","My throat hurts.","garganta","health"],
 ["¿Hace falta cita previa?","Do I need an appointment?","cita","health"],
 ["¿Puedo tomar esto con alcohol?","Can I take this with alcohol?","alcohol","health"],
+["Me he cortado y necesito una tirita.","I've cut myself and need a plaster.","tirita","health"],
+["¿Tienen crema para las picaduras?","Do you have cream for insect bites?","picaduras","health"],
+["Me duele el oído desde ayer.","My ear has been hurting since yesterday.","oído","health"],
+["Necesito protector solar de farmacia.","I need pharmaceutical sun protection.","protector","health"],
+["¿Cuántas veces al día tomo estas pastillas?","How many times a day do I take these tablets?","pastillas","health"],
+["¿Tienen algo para el mareo?","Do you have something for dizziness?","mareo","health"],
+["Tengo una erupción en la piel.","I have a skin rash.","erupción","health"],
+["¿Dónde está el hospital más cercano?","Where is the nearest hospital?","hospital","health"],
+["Me duele la espalda desde hace tres días.","My back has been hurting for three days.","espalda","health"],
+["¿Tiene tarjeta sanitaria europea?","Do you have a European health card?","sanitaria","health"],
+["¿Necesito hacer análisis de sangre?","Do I need a blood test?","análisis","health"],
+["Tengo tensión alta.","I have high blood pressure.","tensión","health"],
 ["¿Qué planes tienes para el verano?","What plans do you have for the summer?","planes","social"],
 ["¿Sales esta noche?","Are you going out tonight?","sales","social"],
 ["¿Cuánto tiempo llevas en Almería?","How long have you been in Almería?","llevas","social"],
@@ -448,6 +622,16 @@ const ALL=[
 ["¿Me das tu número de teléfono?","Can you give me your phone number?","teléfono","social"],
 ["Fue una noche estupenda.","It was a wonderful evening.","estupenda","social"],
 ["¡Hasta la próxima vez!","Until next time!","próxima","social"],
+["¿Dónde quedamos esta tarde?","Where shall we meet this afternoon?","quedamos","social"],
+["¿Puedo traer a un amigo?","Can I bring a friend?","traer","social"],
+["¿Qué haces este fin de semana?","What are you doing this weekend?","haces","social"],
+["Me lo he pasado muy bien contigo.","I had a really great time with you.","pasado","social"],
+["¿Has estado en el cabo de Gata?","Have you been to Cabo de Gata?","estado","social"],
+["Tenemos que hacer una barbacoa juntos.","We must have a barbecue together.","barbacoa","social"],
+["¿Cuándo vuelves a Almería?","When are you coming back to Almería?","vuelves","social"],
+["¿Conoces a alguien que alquile kayaks?","Do you know anyone who rents kayaks?","kayaks","social"],
+["Fue un placer conocerte.","It was a pleasure to meet you.","placer","social"],
+["¿Tienes Instagram? Te mando las fotos.","Do you have Instagram? I'll send you the photos.","Instagram","social"],
 ["¿Habla inglés?","Do you speak English?","inglés","general"],
 ["No entiendo, ¿puede repetir más despacio?","I don't understand, can you repeat more slowly?","despacio","general"],
 ["¿Cómo se dice esto en español?","How do you say this in Spanish?","dice","general"],
@@ -468,7 +652,7 @@ const ALL=[
 ["¿Hay visitas guiadas al desierto de Tabernas?","Are there guided tours to the Tabernas desert?","guiadas","general"],
 ["El Cabo de Gata es un paraje natural único.","Cabo de Gata is a unique natural area.","paraje","general"],
 ["El mercado central abre por las mañanas.","The central market opens in the mornings.","mercado","general"],
-["Voy a dar un paseo por el casco antiguo.","I'm going for a walk around the old town.","paseo","general"],
+["Voy a dar un paseo por el casco antiguo.","I'm going for a walk around the old town.","casco","general"],
 ["¿Hay ferry desde Almería a Marruecos?","Is there a ferry from Almería to Morocco?","ferry","general"],
 ["¿Cuándo es la feria de Almería?","When is the Almería fair?","feria","general"],
 ["La uva de Almería es famosa en toda España.","Almería's grapes are famous throughout Spain.","uva","general"],
@@ -493,255 +677,268 @@ const ALL=[
 ["¿Dónde está el mejor mirador de la ciudad?","Where is the best viewpoint in the city?","mirador","general"],
 ["¿Cuándo hay luna llena este mes?","When is the full moon this month?","luna","general"],
 ["¿Cuándo llegaron los árabes a Almería?","When did the Arabs arrive in Almería?","árabes","general"],
-["Gracias por todo, ha sido un placer.","Thank you for everything, it has been a pleasure.","placer","general"]
+["Gracias por todo, ha sido un placer.","Thank you for everything, it has been a pleasure.","placer","general"],
+["¿Puedo sacar dinero aquí?","Can I withdraw money here?","dinero","general"],
+["¿Dónde está la comisaría de policía?","Where is the police station?","comisaría","general"],
+["¿Tiene cobertura aquí el móvil?","Does the mobile phone get signal here?","cobertura","general"],
+["¿Me puede hacer una recomendación?","Can you make me a recommendation?","recomendación","general"],
+["¿Cuál es el código postal de aquí?","What is the postcode here?","código","general"],
+["¿Hay un cajero automático cerca?","Is there a cash machine nearby?","cajero","general"],
+["¿Dónde puedo comprar una tarjeta SIM?","Where can I buy a SIM card?","SIM","general"],
+["Necesito imprimir un documento.","I need to print a document.","imprimir","general"],
+["¿Dónde puedo encontrar una papelería?","Where can I find a stationery shop?","papelería","general"],
+["¿A qué hora abre el mercadillo?","What time does the street market open?","mercadillo","general"],
+["¿Dónde está la biblioteca?","Where is the library?","biblioteca","general"],
+["¿Me puede llamar un taxi?","Can you call me a taxi?","llamar","general"],
+["¿Cuánto tarda el pedido en llegar?","How long does the order take to arrive?","pedido","general"],
+["¿Hay conexión de tren a Málaga?","Is there a train connection to Málaga?","conexión","general"],
+["¿Dónde se celebra el mercado de los domingos?","Where is the Sunday market held?","celebra","general"],
+["¿Puedo usar mi tarjeta extranjera aquí?","Can I use my foreign card here?","extranjera","general"],
+["Necesito un cargador para el portátil.","I need a charger for my laptop.","cargador","general"],
+["¿Dónde puedo reciclar las botellas?","Where can I recycle the bottles?","reciclar","general"],
+["¿Hay oficina de correos cerca?","Is there a post office nearby?","correos","general"],
+["¿Cuánto cuesta enviar una carta a Inglaterra?","How much does it cost to send a letter to England?","carta","general"],
+["¿Dónde puedo comprar sellos?","Where can I buy stamps?","sellos","general"],
+["¿Hay lavandería por aquí?","Is there a laundry nearby?","lavandería","general"],
+["¿Cuánto cobra por lavar y planchar?","How much do you charge for washing and ironing?","cobra","general"],
+["¿Dónde puedo alquilar una moto?","Where can I rent a motorbike?","moto","general"],
+["¿Hay servicio de alquiler de coches en el aeropuerto?","Is there a car hire service at the airport?","coches","general"],
+["¿Puedo dejar el equipaje aquí?","Can I leave my luggage here?","equipaje","general"],
+["¿Dónde está la consigna?","Where is the left luggage?","consigna","general"],
+["¿Me puede dar una bolsa para el equipaje?","Can you give me a bag for the luggage?","bolsa","general"],
+["¿A qué hora sale el primer autobús mañana?","What time does the first bus leave tomorrow?","primero","general"],
+["¿Hay descuento para mayores?","Is there a discount for seniors?","mayores","general"],
+["¿Dónde puedo ver un partido de fútbol?","Where can I watch a football match?","fútbol","general"],
+["¿Cuándo juega el Almería en casa?","When does Almería play at home?","juega","general"],
+["¿Tienen entradas para el evento?","Do you have tickets for the event?","entradas","general"],
+["¿Cuánto vale la entrada al museo?","How much is the museum entrance?","vale","general"],
+["¿Hay visita guiada en inglés?","Is there a guided tour in English?","guiada","general"],
+["¿Puedo hacer fotos aquí?","Can I take photos here?","fotos","general"],
+["¿Dónde puedo ver el flamenco en vivo?","Where can I see flamenco live?","flamenco","general"],
+["¿Hay alguna excursión organizada al desierto?","Is there an organised trip to the desert?","excursión","general"],
+["¿Cuánto dura la excursión?","How long does the trip last?","dura","general"],
+["¿Está incluido el almuerzo en el precio?","Is lunch included in the price?","almuerzo","general"],
+["¿Dónde se puede bucear en la zona?","Where can you dive in the area?","bucear","general"],
+["¿Hay cursos de español para extranjeros?","Are there Spanish courses for foreigners?","cursos","general"],
+["¿Dónde puedo practicar el idioma?","Where can I practise the language?","idioma","general"],
+["¿Con qué frecuencia hay mercadillo?","How often is there a street market?","frecuencia","general"],
+["¿Dónde puedo ver artesanía local?","Where can I see local crafts?","artesanía","general"],
+["¿Qué es el Indalo?","What is the Indalo?","Indalo","general"],
+["El Indalo es el símbolo de Almería.","The Indalo is the symbol of Almería.","símbolo","general"],
+["¿Hay muchos extranjeros viviendo aquí?","Are there many foreigners living here?","extranjeros","general"],
+["Me gusta mucho el estilo de vida aquí.","I really like the lifestyle here.","estilo","general"],
+["La gente de aquí es muy amable.","The people here are very friendly.","amable","general"],
+["¿Hablan mucho dialecto en esta zona?","Do they speak much dialect in this area?","dialecto","general"],
+["¿Cuál es la comida típica de Almería?","What is the typical food of Almería?","comida","general"],
+["¿Qué significa eso en español?","What does that mean in Spanish?","significa","general"],
+["No hablo español muy bien todavía.","I don't speak Spanish very well yet.","todavía","general"],
+["Estoy intentando mejorar mi español.","I'm trying to improve my Spanish.","intentando","general"],
+["¿Puede hablar más despacio, por favor?","Can you speak more slowly, please?","puede","general"],
+["¿Cómo se pronuncia esta palabra?","How do you pronounce this word?","pronuncia","general"],
+["¿Qué significa esta expresión?","What does this expression mean?","expresión","general"],
+["¿Es correcto decir esto así?","Is it correct to say it like this?","correcto","general"],
+["Me cuesta entender el acento de aquí.","I find the local accent hard to understand.","acento","general"],
+["¿Puedes hablar en español conmigo?","Can you speak Spanish with me?","conmigo","general"],
+["Quiero aprender el vocabulario de la vida diaria.","I want to learn everyday vocabulary.","vocabulario","general"],
+["¿Cuál es la diferencia entre tú y usted?","What is the difference between tú and usted?","diferencia","general"],
+["¿Por qué se usa el subjuntivo aquí?","Why is the subjunctive used here?","subjuntivo","general"],
+["¿Cuándo se usa ser y cuándo estar?","When do you use ser and when estar?","cuándo","general"],
 ];
+// ── STATE ──
+let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,browseCat:'all'};
 
-// STATE
-let state = {
-  dailyCount: 20,
-  todayDate: '',
-  todayQueue: [],
-  todayDone: [],
-  todayAgain: [],
-  knownIds: [],
-  streak: 0,
-  lastDoneDate: '',
-  autoplay: false,
-  cardFlipped: false,
-  activeBrowseCat: 'all'
-};
-
-function loadState(){
-  const s = localStorage.getItem('almeria_state');
-  if(s){ try{ Object.assign(state, JSON.parse(s)); }catch(e){} }
+function load(){const d=localStorage.getItem('alm3');if(d){try{Object.assign(S,JSON.parse(d))}catch(e){}}}
+function save(){localStorage.setItem('alm3',JSON.stringify(S))}
+function saveSettings(){S.autoplay=document.getElementById('auto-toggle').checked;save();updateToggle()}
+function updateToggle(){
+  const on=S.autoplay;
+  document.getElementById('auto-toggle').checked=on;
+  document.getElementById('tog-track').style.background=on?'#2A7FB5':'#ccc';
+  document.getElementById('tog-thumb').style.left=on?'21px':'3px';
 }
-function saveState(){
-  localStorage.setItem('almeria_state', JSON.stringify(state));
-}
-function saveSettings(){
-  state.autoplay = document.getElementById('autoplay-toggle').checked;
-  saveState();
-  updateToggleUI();
-}
-function updateToggleUI(){
-  const t = document.getElementById('autoplay-toggle');
-  const track = document.getElementById('toggle-track');
-  const thumb = document.getElementById('toggle-thumb');
-  if(t.checked){ track.style.background='#2d5a27'; thumb.style.left='21px'; }
-  else { track.style.background='#ccc'; thumb.style.left='3px'; }
-}
-
-function todayStr(){
-  return new Date().toISOString().slice(0,10);
-}
+function todayStr(){return new Date().toISOString().slice(0,10)}
 
 function initToday(){
-  const today = todayStr();
-  if(state.todayDate !== today){
-    // new day — build fresh queue, update streak
-    if(state.lastDoneDate){
-      const last = new Date(state.lastDoneDate);
-      const diff = (new Date(today) - last)/(1000*60*60*24);
-      if(diff <= 1.5) state.streak++;
-      else state.streak = 1;
-    } else { state.streak = 1; }
-    // Shuffle all sentences, prioritise unseen
-    const seen = new Set(state.knownIds);
-    const unseen = ALL.map((_,i)=>i).filter(i=>!seen.has(i));
-    const seenArr = ALL.map((_,i)=>i).filter(i=>seen.has(i));
-    const pool = [...shuffle(unseen), ...shuffle(seenArr)];
-    state.todayQueue = pool.slice(0, state.dailyCount);
-    state.todayDone = [];
-    state.todayAgain = [];
-    state.todayDate = today;
-    saveState();
+  const t=todayStr();
+  if(S.todayDate!==t){
+    if(S.lastDoneDate){
+      const diff=(new Date(t)-new Date(S.lastDoneDate))/(864e5);
+      S.streak=diff<=1.5?S.streak+1:1;
+    } else S.streak=1;
+    const seen=new Set(S.knownIds);
+    const unseen=ALL.map((_,i)=>i).filter(i=>!seen.has(i));
+    const seenArr=ALL.map((_,i)=>i).filter(i=>seen.has(i));
+    S.todayQueue=[...shuf(unseen),...shuf(seenArr)].slice(0,S.dailyCount);
+    S.todayDone=[];S.todayAgain=[];S.todayDate=t;save();
   }
 }
 
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
-  return a;
+function shuf(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]]}return r}
+
+function adjDaily(d){
+  S.dailyCount=Math.max(5,Math.min(50,S.dailyCount+d));
+  document.getElementById('daily-disp').textContent=S.dailyCount;
+  document.getElementById('daily-disp-lg').textContent=S.dailyCount;
+  if(S.todayDate===todayStr()&&S.dailyCount>S.todayQueue.length+S.todayDone.length){
+    const used=new Set([...S.todayQueue,...S.todayDone,...S.todayAgain]);
+    const extra=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i)));
+    const need=S.dailyCount-S.todayQueue.length-S.todayDone.length-S.todayAgain.length;
+    S.todayQueue=[...S.todayQueue,...extra.slice(0,need)];
+  }
+  save();renderToday();renderStats();
 }
 
-function adjustDaily(delta){
-  state.dailyCount = Math.max(5, Math.min(50, state.dailyCount + delta));
-  document.getElementById('daily-display').textContent = state.dailyCount;
-  document.getElementById('daily-display-lg').textContent = state.dailyCount;
-  // rebuild today's queue if we increased
-  if(state.todayDate === todayStr() && state.dailyCount > state.todayQueue.length + state.todayDone.length){
-    const alreadyUsed = new Set([...state.todayQueue, ...state.todayDone]);
-    const extra = ALL.map((_,i)=>i).filter(i=>!alreadyUsed.has(i));
-    const need = state.dailyCount - state.todayQueue.length - state.todayDone.length;
-    state.todayQueue = [...state.todayQueue, ...shuffle(extra).slice(0, need)];
-  }
-  saveState();
-  renderToday();
-  renderStats();
+function greeting(){
+  const h=new Date().getHours();
+  if(h<12)return'Buenos días ☀️';
+  if(h<20)return'Buenas tardes 🌊';
+  return'Buenas noches 🌙';
+}
+
+// ── IMAGE HELPERS ──
+// Images are named card-001.jpg, card-002.jpg etc. (1-indexed)
+// Upload them to your GitHub repo in an /img/ folder
+// Cards without an image show the deep blue background
+function cardNum(idx){return String(idx+1).padStart(3,'0')}
+function imgSrc(idx){return`img/card-${cardNum(idx)}.jpg`}
+
+function cardImgTag(idx){
+  return`<img class="card-img" src="${imgSrc(idx)}" alt="" onerror="this.style.display='none'" loading="eager">`;
+}
+function browseImgTag(idx){
+  return`<img class="bc-img" src="${imgSrc(idx)}" alt="" onerror="this.style.display='none'" loading="lazy">`;
 }
 
 // ── TODAY RENDER ──
 function renderToday(){
-  document.getElementById('streak-val').textContent = state.streak;
-  document.getElementById('daily-display').textContent = state.dailyCount;
-  const total = state.todayDone.length + state.todayQueue.length + state.todayAgain.length;
-  const done = state.todayDone.length;
-  document.getElementById('progress-text').textContent = done + ' / ' + total;
-  const pct = total > 0 ? Math.round(done/total*100) : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-
-  const now = new Date();
-  document.getElementById('today-date').textContent = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
-
-  const stack = document.getElementById('card-stack');
-  const queue = [...state.todayAgain, ...state.todayQueue];
-  if(queue.length === 0 && total > 0){
-    stack.innerHTML = `<div class="done-state">
-      <div class="done-icon">🎉</div>
-      <h2>¡Muy bien!</h2>
-      <p>You've completed today's ${done} cards.<br>Come back tomorrow to keep your streak going.</p>
-      <button class="btn-primary" onclick="addMoreCards()">Practice more cards</button>
-    </div>`;
-    state.lastDoneDate = todayStr();
-    saveState();
+  document.getElementById('greeting').textContent=greeting();
+  document.getElementById('streak-val').textContent=S.streak;
+  document.getElementById('daily-disp').textContent=S.dailyCount;
+  const now=new Date();
+  document.getElementById('today-date').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  const queue=[...S.todayAgain,...S.todayQueue];
+  const total=S.todayDone.length+queue.length;
+  document.getElementById('prog-text').textContent=S.todayDone.length+' / '+total;
+  document.getElementById('prog-fill').style.width=(total>0?Math.round(S.todayDone.length/total*100):0)+'%';
+  const area=document.getElementById('card-area');
+  if(total===0){area.innerHTML=`<div class="done-state"><div class="done-icon">👋</div><h2>¡Empecemos!</h2><p>Ready for today's session?</p><button class="btn-primary" onclick="initToday();renderToday()">Start</button></div>`;return}
+  if(queue.length===0){
+    S.lastDoneDate=todayStr();save();
+    area.innerHTML=`<div class="done-state"><div class="done-icon">🎉</div><h2>¡Muy bien!</h2><p>You've finished today's ${S.todayDone.length} cards.<br>Vuelve mañana — come back tomorrow!</p><button class="btn-primary" onclick="addMore()">Practice more</button></div>`;
     return;
   }
-  if(queue.length === 0 && total === 0){
-    stack.innerHTML = `<div class="done-state"><div class="done-icon">👋</div><h2>Ready to start?</h2><p>Tap below to begin today's session.</p><button class="btn-primary" onclick="initToday();renderToday()">Start</button></div>`;
-    return;
-  }
-
-  state.cardFlipped = false;
-  const idx = queue[0];
-  const card = ALL[idx];
-  stack.innerHTML = `<div class="flashcard" id="main-card" onclick="flipCard()">
-    <button class="audio-btn" onclick="event.stopPropagation();speakCard('${escQ(card[0])}')" title="Listen">🔊</button>
-    <div class="card-cat cc-${card[3]}">${CAT_LABELS[card[3]]||card[3]}</div>
-    <div class="card-es">${card[0]}</div>
-    <span class="card-kw">${card[2]}</span>
-    <div class="card-en" id="card-en">${card[1]}</div>
-    <div class="card-tap-hint" id="tap-hint">Tap to reveal translation</div>
-    <div class="card-actions hidden" id="card-actions">
-      <button class="btn-again" onclick="event.stopPropagation();markAgain(${idx})">Practice again</button>
-      <button class="btn-knew" onclick="event.stopPropagation();markKnew(${idx})">Got it ✓</button>
+  const idx=queue[0];const card=ALL[idx];const cat=card[3];
+  area.innerHTML=`<div class="flashcard" id="fc" onclick="flip()">
+    ${cardImgTag(idx)}
+    <div class="card-overlay" id="fc-overlay" style="display:none"></div>
+    <button class="card-audio" onclick="event.stopPropagation();speak('${esc(card[0])}')" aria-label="Listen">🔊</button>
+    <div class="card-content">
+      <span class="card-cat-badge cc-${cat}">${CAT[cat]||cat}</span>
+      <div class="card-body">
+        <div class="card-es">${card[0]}</div>
+        <span class="card-kw">${card[2]}</span>
+        <div class="card-en" id="fc-en">${card[1]}</div>
+        <div class="card-hint" id="fc-hint">Tap to reveal translation</div>
+        <div class="card-actions" id="fc-act">
+          <button class="btn-again" onclick="event.stopPropagation();markAgain(${idx})">Again</button>
+          <button class="btn-knew" onclick="event.stopPropagation();markKnew(${idx})">Got it ✓</button>
+        </div>
+      </div>
     </div>
   </div>`;
-  if(state.autoplay) setTimeout(()=>speakCard(card[0]),300);
+  // show overlay when image loads to improve text readability
+  const img=document.querySelector('.card-img');
+  if(img){
+    img.onload=()=>{
+      const ov=document.getElementById('fc-overlay');
+      if(ov){ov.style.display='block'}
+    };
+  }
+  if(S.autoplay)setTimeout(()=>speak(card[0]),350);
 }
 
-function escQ(s){ return s.replace(/'/g,"\\'"); }
-
-function flipCard(){
-  if(state.cardFlipped) return;
-  state.cardFlipped = true;
-  document.getElementById('card-en').classList.add('visible');
-  document.getElementById('tap-hint').style.display='none';
-  document.getElementById('card-actions').classList.remove('hidden');
+function flip(){
+  const en=document.getElementById('fc-en');
+  const hint=document.getElementById('fc-hint');
+  const act=document.getElementById('fc-act');
+  if(!en||en.classList.contains('show'))return;
+  en.classList.add('show');
+  if(hint)hint.style.display='none';
+  if(act)act.classList.add('show');
 }
 
-function markKnew(idx){
-  animateCard('swipe-right', ()=>{
-    state.todayAgain = state.todayAgain.filter(i=>i!==idx);
-    state.todayQueue = state.todayQueue.filter(i=>i!==idx);
-    if(!state.todayDone.includes(idx)) state.todayDone.push(idx);
-    if(!state.knownIds.includes(idx)) state.knownIds.push(idx);
-    saveState(); renderToday();
-  });
-}
+function anim(cls,cb){const c=document.getElementById('fc');if(!c){cb();return}c.classList.add(cls);setTimeout(cb,260)}
 
-function markAgain(idx){
-  animateCard('swipe-left', ()=>{
-    state.todayQueue = state.todayQueue.filter(i=>i!==idx);
-    state.todayAgain = state.todayAgain.filter(i=>i!==idx);
-    state.todayAgain.push(idx);
-    saveState(); renderToday();
-  });
-}
+function markKnew(idx){anim('swipe-r',()=>{S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayQueue=S.todayQueue.filter(i=>i!==idx);if(!S.todayDone.includes(idx))S.todayDone.push(idx);if(!S.knownIds.includes(idx))S.knownIds.push(idx);save();renderToday()})}
+function markAgain(idx){anim('swipe-l',()=>{S.todayQueue=S.todayQueue.filter(i=>i!==idx);S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayAgain.push(idx);save();renderToday()})}
+function addMore(){const used=new Set([...S.todayDone,...S.todayQueue,...S.todayAgain]);S.todayQueue=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);save();renderToday()}
+function speak(t){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=0.85;window.speechSynthesis.speak(u)}
+function esc(s){return s.replace(/'/g,"\\'")}
 
-function animateCard(cls, cb){
-  const c = document.getElementById('main-card');
-  if(!c){ cb(); return; }
-  c.classList.add(cls);
-  setTimeout(cb, 280);
-}
-
-function addMoreCards(){
-  const used = new Set([...state.todayDone, ...state.todayQueue, ...state.todayAgain]);
-  const extra = shuffle(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);
-  state.todayQueue = [...extra];
-  saveState(); renderToday();
-}
-
-function speakCard(text){
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang='es-ES'; u.rate=0.85;
-  window.speechSynthesis.speak(u);
-}
-
-// ── BROWSE RENDER ──
+// ── BROWSE ──
 function renderBrowse(){
-  const q = document.getElementById('browse-search').value.toLowerCase();
-  const cat = state.activeBrowseCat;
-  const filtered = ALL.filter(r=>{
-    const cm = cat==='all'||r[3]===cat;
-    const qm = !q||r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q)||r[2].toLowerCase().includes(q);
-    return cm&&qm;
-  });
-  document.getElementById('browse-count').textContent = filtered.length + ' sentences';
-  document.getElementById('browse-list').innerHTML = filtered.map((r,i)=>`
-    <div class="browse-card">
-      <div class="es">${r[0]}</div>
-      <div class="en">${r[1]}</div>
-      <div class="browse-card-foot">
-        <span class="bc-cat cc-${r[3]}">${CAT_LABELS[r[3]]||r[3]}</span>
-        <span class="bc-kw">${r[2]}</span>
-        <button class="bc-audio" onclick="speakCard('${escQ(r[0])}')" title="Listen">🔊</button>
+  const q=document.getElementById('browse-q').value.toLowerCase();
+  const cat=S.browseCat;
+  const f=ALL.map((r,i)=>({r,i})).filter(({r})=>(cat==='all'||r[3]===cat)&&(!q||r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q)||r[2].toLowerCase().includes(q)));
+  document.getElementById('browse-count').textContent=f.length+' sentences';
+  document.getElementById('browse-list').innerHTML=f.map(({r,i})=>`
+    <div class="bc">
+      <div class="bc-img-wrap">${browseImgTag(i)}<div class="bc-img-ph"></div></div>
+      <div class="bc-body">
+        <div class="bc-num">#${String(i+1).padStart(3,'0')}</div>
+        <div class="bc-es">${r[0]}</div>
+        <div class="bc-en">${r[1]}</div>
+        <div class="bc-foot">
+          <span class="bc-cat cc-${r[3]}">${CAT[r[3]]||r[3]}</span>
+          <span class="bc-kw">${r[2]}</span>
+          <button class="bc-audio" onclick="speak('${esc(r[0])}')" aria-label="Listen">🔊</button>
+        </div>
       </div>
     </div>`).join('');
 }
 
-function initBrowseCats(){
-  const cats = ['all',...Object.keys(CAT_LABELS)];
-  document.getElementById('cat-pills').innerHTML = cats.map(c=>`
-    <button class="cat-pill${state.activeBrowseCat===c?' active':''}" onclick="setBrowseCat('${c}')">${c==='all'?'All':CAT_LABELS[c]||c}</button>`).join('');
+function initCatPills(){
+  const cats=['all',...Object.keys(CAT)];
+  document.getElementById('cat-pills').innerHTML=cats.map(c=>`<button class="cat-pill${S.browseCat===c?' active':''}" onclick="setCat('${c}')">${c==='all'?'All':CAT[c]||c}</button>`).join('');
 }
-function setBrowseCat(c){ state.activeBrowseCat=c; initBrowseCats(); renderBrowse(); }
+function setCat(c){S.browseCat=c;initCatPills();renderBrowse()}
 
 // ── STATS ──
 function renderStats(){
-  document.getElementById('daily-display-lg').textContent = state.dailyCount;
-  document.getElementById('stat-grid').innerHTML = `
-    <div class="stat-box"><div class="stat-num">${state.knownIds.length}</div><div class="stat-lbl">Words learned</div></div>
-    <div class="stat-box"><div class="stat-num">${ALL.length - state.knownIds.length}</div><div class="stat-lbl">Still to learn</div></div>
-    <div class="stat-box"><div class="stat-num">${state.streak}</div><div class="stat-lbl">Day streak 🔥</div></div>
-    <div class="stat-box"><div class="stat-num">${state.dailyCount}</div><div class="stat-lbl">Daily goal</div></div>`;
-  const t = document.getElementById('autoplay-toggle');
-  t.checked = state.autoplay;
-  updateToggleUI();
+  document.getElementById('daily-disp-lg').textContent=S.dailyCount;
+  document.getElementById('stat-grid').innerHTML=`
+    <div class="stat-box"><div class="stat-num">${S.knownIds.length}</div><div class="stat-lbl">Learned</div></div>
+    <div class="stat-box"><div class="stat-num">${ALL.length-S.knownIds.length}</div><div class="stat-lbl">To learn</div></div>
+    <div class="stat-box"><div class="stat-num">${S.streak}</div><div class="stat-lbl">Day streak 🔥</div></div>
+    <div class="stat-box"><div class="stat-num">${S.dailyCount}</div><div class="stat-lbl">Daily goal</div></div>`;
+  updateToggle();
 }
 
-function confirmReset(){
-  if(confirm('Reset all progress? This cannot be undone.')){
-    state.knownIds=[]; state.streak=0; state.lastDoneDate=''; state.todayDate=''; state.todayDone=[]; state.todayQueue=[]; state.todayAgain=[];
-    saveState(); initToday(); renderToday(); renderStats();
-  }
-}
+function confirmReset(){if(confirm('Reset all progress?')){S.knownIds=[];S.streak=0;S.lastDoneDate='';S.todayDate='';S.todayDone=[];S.todayQueue=[];S.todayAgain=[];save();initToday();renderToday();renderStats()}}
 
 // ── SCREENS ──
-function showScreen(name){
+function showScreen(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
-  if(name==='browse'){ initBrowseCats(); renderBrowse(); }
-  if(name==='settings'){ renderStats(); }
+  document.getElementById('screen-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+  if(n==='browse'){initCatPills();renderBrowse()}
+  if(n==='settings')renderStats();
 }
 
+// ── TIME-BASED TOPBAR COLOUR ──
+// Daytime (6am–7pm): Aqua #5AAAC8
+// Evening/night (7pm–6am): Deep Ocean #042C53
+function updateTopbarColor(){
+  const h=new Date().getHours();
+  const color=(h>=6&&h<19)?'#5AAAC8':'#042C53';
+  document.documentElement.style.setProperty('--topbar-color',color);
+}
+updateTopbarColor();
+setInterval(updateTopbarColor,60000);
+
 // ── INIT ──
-loadState();
-initToday();
-renderToday();
+load();initToday();renderToday();
 </script>
 </body>
 </html>
