@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Español Almería">
+<meta name="theme-color" content="#1a2e1a">
+<title>Español Almería</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #2d5a27;
+  --green-light: #4a8c3f;
+  --green-pale: #e8f0e6;
+  --sand: #f5f0e8;
+  --sand-dark: #e8dfc8;
+  --terracotta: #c4622d;
+  --terracotta-light: #e87d4a;
+  --sky: #4a8fa8;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --white: #fff;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); }
+
+/* NAV */
+.nav { display: flex; background: var(--green); padding: 52px 0 0; }
+.nav-tab { flex: 1; padding: 12px 4px 14px; text-align: center; font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; transition: color 0.2s; letter-spacing: 0.04em; text-transform: uppercase; border: none; background: none; }
+.nav-tab.active { color: #fff; position: relative; }
+.nav-tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: #8fcf7a; border-radius: 2px; }
+.nav-icon { font-size: 20px; display: block; margin-bottom: 3px; }
+
+/* SCREENS */
+.screen { display: none; flex-direction: column; height: calc(100vh - 88px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.screen.active { display: flex; }
+
+/* ── TODAY SCREEN ── */
+.today-header { background: var(--green); padding: 20px 20px 28px; color: white; }
+.today-header h1 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+.today-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.65); }
+.streak-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; }
+.streak-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #8fcf7a; }
+.streak-label { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.3; }
+.progress-wrap { padding: 16px 20px 8px; }
+.progress-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.progress-top span { font-size: 13px; color: var(--text-muted); }
+.progress-top strong { font-size: 15px; color: var(--text); }
+.progress-bar { height: 8px; background: var(--sand-dark); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--green-light), #8fcf7a); border-radius: 99px; transition: width 0.4s ease; }
+.daily-count-row { display: flex; align-items: center; gap: 10px; padding: 0 20px 16px; }
+.daily-count-row label { font-size: 13px; color: var(--text-muted); flex: 1; }
+.count-control { display: flex; align-items: center; gap: 8px; }
+.count-btn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--green); background: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 600; }
+.count-val { font-size: 15px; font-weight: 500; min-width: 28px; text-align: center; }
+.card-stack { padding: 0 20px 20px; flex: 1; display: flex; flex-direction: column; }
+
+/* FLASHCARD */
+.flashcard { background: var(--white); border-radius: var(--radius); padding: 28px 24px 22px; flex: 1; display: flex; flex-direction: column; box-shadow: 0 4px 24px rgba(0,0,0,0.08); position: relative; overflow: hidden; min-height: 260px; cursor: pointer; user-select: none; transition: transform 0.15s; }
+.flashcard:active { transform: scale(0.98); }
+.flashcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--green), #8fcf7a); }
+.card-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--terracotta); font-weight: 500; margin-bottom: 14px; }
+.card-es { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600; line-height: 1.35; color: var(--text); margin-bottom: 10px; }
+.card-kw { display: inline-block; background: var(--green-pale); color: var(--green); font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 500; margin-bottom: 16px; }
+.card-en { font-size: 16px; color: var(--text-muted); line-height: 1.5; padding-top: 14px; border-top: 1px solid #f0ebe0; display: none; }
+.card-en.visible { display: block; }
+.card-tap-hint { font-size: 12px; color: #bbb; text-align: center; margin-top: auto; padding-top: 16px; }
+.card-actions { display: flex; gap: 10px; margin-top: 14px; }
+.card-actions.hidden { display: none; }
+.btn-knew { flex: 1; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-again { flex: 1; background: none; color: var(--terracotta); border: 1.5px solid var(--terracotta); border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.audio-btn { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: var(--sand); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.done-state { text-align: center; padding: 40px 20px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.done-state .done-icon { font-size: 56px; margin-bottom: 16px; }
+.done-state h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
+.done-state p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.btn-primary { background: var(--green); color: white; border: none; border-radius: var(--radius-sm); padding: 14px 28px; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 20px; font-family: 'DM Sans', sans-serif; }
+
+/* ── BROWSE SCREEN ── */
+.browse-search { padding: 16px 20px 8px; position: sticky; top: 0; background: var(--sand); z-index: 10; }
+.search-input { width: 100%; padding: 11px 16px; border: 1.5px solid var(--sand-dark); border-radius: 12px; font-size: 15px; background: white; color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; }
+.search-input:focus { border-color: var(--green-light); }
+.cat-pills { display: flex; gap: 8px; overflow-x: auto; padding: 8px 20px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.cat-pills::-webkit-scrollbar { display: none; }
+.cat-pill { white-space: nowrap; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--sand-dark); font-size: 12px; cursor: pointer; background: white; color: var(--text-muted); font-family: 'DM Sans', sans-serif; flex-shrink: 0; }
+.cat-pill.active { background: var(--green); color: white; border-color: var(--green); }
+.browse-list { padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+.browse-card { background: white; border-radius: var(--radius-sm); padding: 14px 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+.browse-card .es { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
+.browse-card .en { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.browse-card-foot { display: flex; align-items: center; gap: 8px; }
+.bc-cat { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.bc-kw { font-size: 11px; color: var(--green); background: var(--green-pale); padding: 2px 8px; border-radius: 10px; }
+.bc-audio { margin-left: auto; font-size: 18px; background: none; border: none; cursor: pointer; padding: 4px; }
+.browse-count { padding: 0 20px 6px; font-size: 13px; color: var(--text-muted); }
+
+/* ── SETTINGS SCREEN ── */
+.settings-wrap { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.settings-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: 0 1px 8px rgba(0,0,0,0.05); }
+.settings-card h3 { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 14px; color: var(--text); }
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f0e8; }
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 14px; color: var(--text); }
+.setting-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.count-control-lg { display: flex; align-items: center; gap: 12px; }
+.count-btn-lg { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--green); background: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 600; }
+.count-val-lg { font-size: 18px; font-weight: 500; min-width: 32px; text-align: center; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-box { background: var(--sand); border-radius: 12px; padding: 14px; text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--green); }
+.stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.btn-danger { background: none; color: var(--terracotta); border: 1.5px solid var(--terracotta); border-radius: var(--radius-sm); padding: 12px 20px; font-size: 14px; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif; margin-top: 4px; }
+.install-box { background: var(--green-pale); border-radius: var(--radius); padding: 18px 20px; border-left: 4px solid var(--green); }
+.install-box h3 { font-size: 15px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
+.install-box ol { padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 2; }
+
+/* CAT COLORS */
+.cc-beach { background: #deeef7; color: #185FA5; }
+.cc-restaurant { background: #faeeda; color: #854F0B; }
+.cc-bar { background: #fbeaf0; color: #993556; }
+.cc-neighbours { background: #eaf3de; color: #3B6D11; }
+.cc-gym { background: #faece7; color: #993C1D; }
+.cc-shops { background: #eeedfe; color: #534AB7; }
+.cc-transport { background: #f1efe8; color: #5F5E5A; }
+.cc-home { background: #e1f5ee; color: #0F6E56; }
+.cc-general { background: #f1efe8; color: #444441; }
+.cc-weather { background: #deeef7; color: #0C447C; }
+.cc-health { background: #fcebeb; color: #A32D2D; }
+.cc-social { background: #faeeda; color: #633806; }
+
+/* SWIPE ANIMATION */
+.flashcard.swipe-right { animation: swipeRight 0.3s forwards; }
+.flashcard.swipe-left { animation: swipeLeft 0.3s forwards; }
+@keyframes swipeRight { to { transform: translateX(120%) rotate(12deg); opacity: 0; } }
+@keyframes swipeLeft { to { transform: translateX(-120%) rotate(-12deg); opacity: 0; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="nav-tab active" onclick="showScreen('today')" id="tab-today">
+    <span class="nav-icon">☀️</span>Today
+  </button>
+  <button class="nav-tab" onclick="showScreen('browse')" id="tab-browse">
+    <span class="nav-icon">📚</span>Browse
+  </button>
+  <button class="nav-tab" onclick="showScreen('settings')" id="tab-settings">
+    <span class="nav-icon">⚙️</span>Settings
+  </button>
+</nav>
+
+<!-- TODAY -->
+<div class="screen active" id="screen-today">
+  <div class="today-header">
+    <h1>Buenos días 🌞</h1>
+    <div class="subtitle" id="today-date"></div>
+    <div class="streak-row">
+      <div class="streak-val" id="streak-val">0</div>
+      <div class="streak-label">day streak<br><span style="font-size:11px;opacity:0.6">keep it going!</span></div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Today's progress</span>
+      <strong id="progress-text">0 / 0</strong>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="daily-count-row">
+    <label>Cards per day</label>
+    <div class="count-control">
+      <button class="count-btn" onclick="adjustDaily(-5)">−</button>
+      <span class="count-val" id="daily-display">20</span>
+      <button class="count-btn" onclick="adjustDaily(5)">+</button>
+    </div>
+  </div>
+  <div class="card-stack" id="card-stack"></div>
+</div>
+
+<!-- BROWSE -->
+<div class="screen" id="screen-browse">
+  <div class="browse-search">
+    <input type="search" class="search-input" placeholder="Search Spanish or English…" id="browse-search" oninput="renderBrowse()">
+  </div>
+  <div class="cat-pills" id="cat-pills"></div>
+  <div class="browse-count" id="browse-count"></div>
+  <div class="browse-list" id="browse-list"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="screen-settings">
+  <div class="settings-wrap">
+    <div class="settings-card">
+      <h3>Daily goal</h3>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Cards per session</div>
+          <div class="setting-sub">Adjust how many you review daily</div>
+        </div>
+        <div class="count-control-lg">
+          <button class="count-btn-lg" onclick="adjustDaily(-5)">−</button>
+          <span class="count-val-lg" id="daily-display-lg">20</span>
+          <button class="count-btn-lg" onclick="adjustDaily(5)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <h3>Your progress</h3>
+      <div class="stat-grid" id="stat-grid"></div>
+    </div>
+    <div class="settings-card">
+      <h3>Audio</h3>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Auto-play audio</div>
+          <div class="setting-sub">Speak card when it appears</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:44px;height:26px">
+          <input type="checkbox" id="autoplay-toggle" style="opacity:0;width:0;height:0" onchange="saveSettings()">
+          <span style="position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:26px;transition:0.3s" id="toggle-track"></span>
+          <span style="position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s" id="toggle-thumb"></span>
+        </label>
+      </div>
+    </div>
+    <div class="install-box">
+      <h3>📱 Add to iPhone home screen</h3>
+      <ol>
+        <li>Open this page in <strong>Safari</strong></li>
+        <li>Tap the <strong>Share</strong> button (box with arrow)</li>
+        <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+        <li>Tap <strong>Add</strong> — done!</li>
+      </ol>
+    </div>
+    <div class="settings-card">
+      <h3>Reset</h3>
+      <button class="btn-danger" onclick="confirmReset()">Reset all progress</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_LABELS={beach:"🏖 Beach",restaurant:"🍽 Restaurant",bar:"🍺 Bar",neighbours:"👋 Neighbours",gym:"💪 Gym",shops:"🛒 Shops",transport:"🚌 Transport",home:"🏠 Home",general:"💬 General",weather:"☀️ Weather",health:"🏥 Health",social:"🎉 Social"};
+
+const ALL=[
+["Hay sitio en la arena aquí.","There's a spot on the sand here.","sitio","beach"],
+["El agua está muy fría hoy.","The water is very cold today.","fría","beach"],
+["¿Me puedes guardar las cosas?","Can you watch my stuff?","guardar","beach"],
+["Necesito una sombrilla para el sol.","I need a sun umbrella.","sombrilla","beach"],
+["Las olas están muy grandes esta mañana.","The waves are very big this morning.","olas","beach"],
+["¿A qué hora abre el chiringuito?","What time does the beach bar open?","chiringuito","beach"],
+["Voy a bañarme un rato.","I'm going for a swim for a while.","bañarme","beach"],
+["Me he quemado con el sol.","I've got sunburned.","quemado","beach"],
+["El paseo marítimo es muy bonito.","The seafront promenade is very nice.","paseo","beach"],
+["¿El agua es segura para nadar?","Is the water safe to swim in?","segura","beach"],
+["Hay muchas medusas hoy.","There are lots of jellyfish today.","medusas","beach"],
+["¿Puedo alquilar una tumbona?","Can I rent a sun lounger?","tumbona","beach"],
+["Tengo arena por todas partes.","I've got sand everywhere.","arena","beach"],
+["El sol se pone muy tarde en verano.","The sun sets very late in summer.","pone","beach"],
+["Necesito más crema solar.","I need more sun cream.","crema","beach"],
+["¿Hay duchas cerca?","Are there showers nearby?","duchas","beach"],
+["Me voy a nadar hasta la boya.","I'm going to swim to the buoy.","boya","beach"],
+["Hace mucho viento hoy en la playa.","It's very windy today on the beach.","viento","beach"],
+["¿Cuánto cuesta la silla de playa?","How much does the beach chair cost?","silla","beach"],
+["El mar está en calma esta tarde.","The sea is calm this afternoon.","calma","beach"],
+["¿Hay bandera roja hoy?","Is there a red flag today?","bandera","beach"],
+["Los niños están jugando en la orilla.","The children are playing at the shore.","orilla","beach"],
+["Nos quedaremos hasta el atardecer.","We'll stay until sunset.","atardecer","beach"],
+["El salvavidas está atento.","The lifeguard is paying attention.","salvavidas","beach"],
+["¿Tiene una mesa libre?","Do you have a free table?","mesa","restaurant"],
+["Me gustaría reservar una mesa para dos.","I'd like to book a table for two.","reservar","restaurant"],
+["¿Cuál es el plato del día?","What's the dish of the day?","plato","restaurant"],
+["La carta, por favor.","The menu, please.","carta","restaurant"],
+["¿Qué me recomienda usted?","What do you recommend?","recomienda","restaurant"],
+["Un agua con gas, por favor.","A sparkling water, please.","agua","restaurant"],
+["La cuenta, cuando pueda.","The bill, when you're ready.","cuenta","restaurant"],
+["¿Está incluido el servicio?","Is service included?","servicio","restaurant"],
+["Tengo alergia al marisco.","I'm allergic to seafood.","alergia","restaurant"],
+["¿Es sin gluten?","Is it gluten-free?","gluten","restaurant"],
+["Ponme el menú del día, por favor.","Give me the set menu, please.","menú","restaurant"],
+["¿Tienen algo vegetariano?","Do you have anything vegetarian?","vegetariano","restaurant"],
+["Está muy rico, gracias.","It's really delicious, thank you.","rico","restaurant"],
+["¿Me pone otro pan?","Can you bring more bread?","pan","restaurant"],
+["Un gazpacho y una ensalada mixta.","A gazpacho and a mixed salad.","ensalada","restaurant"],
+["¿El pescado es fresco?","Is the fish fresh?","fresco","restaurant"],
+["La paella tarda veinte minutos.","The paella takes twenty minutes.","paella","restaurant"],
+["¿Me puede traer servilletas?","Can you bring me napkins?","servilletas","restaurant"],
+["¿Puedo pagar con tarjeta?","Can I pay by card?","tarjeta","restaurant"],
+["¿Tiene terraza?","Do you have a terrace?","terraza","restaurant"],
+["¿A qué hora cierra el restaurante?","What time does the restaurant close?","cierra","restaurant"],
+["Sin picante, por favor.","Without spice, please.","picante","restaurant"],
+["Una ración de patatas bravas.","A portion of patatas bravas.","ración","restaurant"],
+["Por favor, más aceite y vinagre.","More olive oil and vinegar please.","aceite","restaurant"],
+["Una caña, por favor.","A small beer, please.","caña","bar"],
+["¿Tienen cerveza de barril?","Do you have draught beer?","barril","bar"],
+["¿Qué tapas tienen hoy?","What tapas do you have today?","tapas","bar"],
+["Ponme un vino tinto de la casa.","Give me a house red wine.","vino","bar"],
+["¿Me pone una tónica con ginebra?","Can you get me a gin and tonic?","tónica","bar"],
+["Un cortado, por favor.","A cortado, please.","cortado","bar"],
+["La mitad, por favor.","A half, please.","mitad","bar"],
+["¿Sirven desayunos?","Do you serve breakfasts?","desayunos","bar"],
+["Un café con leche y una tostada.","A white coffee and a toast.","tostada","bar"],
+["¿Está libre esta silla?","Is this chair free?","libre","bar"],
+["Ponme lo mismo.","Give me the same again.","mismo","bar"],
+["¿Tienen zumo de naranja natural?","Do you have fresh orange juice?","zumo","bar"],
+["Una manzanilla fría, por favor.","A cold manzanilla, please.","manzanilla","bar"],
+["¿A qué hora ponen el partido?","What time is the match on?","partido","bar"],
+["¿Funciona el wifi aquí?","Does the wifi work here?","wifi","bar"],
+["¿Cuál es la contraseña del wifi?","What is the wifi password?","contraseña","bar"],
+["Voy a invitar yo esta ronda.","I'll get this round.","invitar","bar"],
+["Otro de lo mismo para todos.","Another of the same for everyone.","todos","bar"],
+["¿Tiene música en directo esta noche?","Do you have live music tonight?","directo","bar"],
+["¿Tienen cócteles de verano?","Do you have summer cocktails?","cócteles","bar"],
+["Un agua mineral sin gas.","A still mineral water.","mineral","bar"],
+["Buenos días, vecino.","Good morning, neighbour.","vecino","neighbours"],
+["¿Cómo está la familia?","How is the family?","familia","neighbours"],
+["Hace buen tiempo hoy, ¿verdad?","The weather is nice today, isn't it.","tiempo","neighbours"],
+["Le presento a mi pareja.","Let me introduce you to my partner.","pareja","neighbours"],
+["¿Le molesta el ruido por las noches?","Does the noise bother you at night?","ruido","neighbours"],
+["¿Sabe si hay corte de agua hoy?","Do you know if there's a water cut today?","corte","neighbours"],
+["¿Tiene un momento?","Do you have a moment?","momento","neighbours"],
+["Perdone que le moleste.","Sorry to bother you.","perdone","neighbours"],
+["¿Ha tenido problemas con la basura?","Have you had problems with the rubbish?","basura","neighbours"],
+["Voy a la compra, ¿necesita algo?","I'm going shopping, do you need anything?","compra","neighbours"],
+["¿Puede bajar el volumen, por favor?","Can you turn the volume down, please?","volumen","neighbours"],
+["Bienvenido al edificio.","Welcome to the building.","bienvenido","neighbours"],
+["¿Le gusta vivir en el barrio?","Do you like living in the neighbourhood?","barrio","neighbours"],
+["El ascensor está estropeado otra vez.","The lift is broken again.","ascensor","neighbours"],
+["Hay que arreglar la puerta del portal.","The main door needs fixing.","portal","neighbours"],
+["El jardín está muy cuidado.","The garden is very well kept.","jardín","neighbours"],
+["Hasta luego, que tenga buen día.","Goodbye, have a good day.","luego","neighbours"],
+["Quisiera hacerme socio.","I'd like to become a member.","socio","gym"],
+["¿Cuánto cuesta la cuota mensual?","How much is the monthly fee?","cuota","gym"],
+["¿Tienen clases de pilates?","Do you have pilates classes?","clases","gym"],
+["¿A qué hora abren?","What time do you open?","abren","gym"],
+["¿Dónde están los vestuarios?","Where are the changing rooms?","vestuarios","gym"],
+["¿Hay taquillas disponibles?","Are there lockers available?","taquillas","gym"],
+["Esta máquina no funciona.","This machine isn't working.","máquina","gym"],
+["¿Me puede enseñar cómo usar esto?","Can you show me how to use this?","enseñar","gym"],
+["¿Tienen piscina?","Do you have a pool?","piscina","gym"],
+["Necesito una toalla.","I need a towel.","toalla","gym"],
+["¿Puedo probar una semana de prueba?","Can I try a trial week?","prueba","gym"],
+["Estoy buscando un entrenador personal.","I'm looking for a personal trainer.","entrenador","gym"],
+["¿Tienen zona de pesas libres?","Do you have a free weights area?","pesas","gym"],
+["Quiero mejorar mi resistencia.","I want to improve my endurance.","resistencia","gym"],
+["¿El gimnasio abre los domingos?","Is the gym open on Sundays?","domingos","gym"],
+["¿Tienen máquinas de cardio?","Do you have cardio machines?","cardio","gym"],
+["¿Pueden hacer una rutina personalizada?","Can they make a personalised routine?","rutina","gym"],
+["Vengo tres veces por semana.","I come three times a week.","veces","gym"],
+["¿Tienen clases para principiantes?","Do you have beginner classes?","principiantes","gym"],
+["El aire acondicionado está muy alto.","The air conditioning is on very high.","acondicionado","gym"],
+["¿Dónde está el supermercado más cercano?","Where is the nearest supermarket?","supermercado","shops"],
+["¿Tiene pan de molde?","Do you have sliced bread?","pan","shops"],
+["¿A qué hora cierra la tienda?","What time does the shop close?","cierra","shops"],
+["¿Tienen esto en otra talla?","Do you have this in another size?","talla","shops"],
+["¿Cuánto cuesta?","How much does it cost?","cuesta","shops"],
+["¿Puedo probármelo?","Can I try it on?","probármelo","shops"],
+["¿Dónde están los probadores?","Where are the changing rooms?","probadores","shops"],
+["¿Aceptan devoluciones?","Do you accept returns?","devoluciones","shops"],
+["¿Está en oferta?","Is it on offer?","oferta","shops"],
+["¿Dónde está la caja?","Where is the checkout?","caja","shops"],
+["Busco aceite de oliva virgen extra.","I'm looking for extra virgin olive oil.","aceite","shops"],
+["¿Dónde están las frutas y verduras?","Where are the fruit and vegetables?","frutas","shops"],
+["Necesito pilas para el mando.","I need batteries for the remote.","pilas","shops"],
+["¿A qué hora abren mañana?","What time do you open tomorrow?","abren","shops"],
+["¿Tienen esto más barato?","Do you have this cheaper?","barato","shops"],
+["¿Tienen carne de cordero?","Do you have lamb?","cordero","shops"],
+["Necesito detergente y suavizante.","I need detergent and fabric softener.","detergente","shops"],
+["¿Está incluido el IVA?","Is VAT included?","IVA","shops"],
+["¿Tienen una farmacia aquí cerca?","Is there a pharmacy nearby?","farmacia","shops"],
+["Busco un regalo para alguien.","I'm looking for a gift for someone.","regalo","shops"],
+["¿Me puede poner doscientos gramos de jamón?","Can you give me two hundred grams of ham?","jamón","shops"],
+["¿Tienen leche sin lactosa?","Do you have lactose-free milk?","lactosa","shops"],
+["¿Me lleva al centro, por favor?","Can you take me to the centre, please?","centro","transport"],
+["¿Cuánto es la carrera?","How much is the fare?","carrera","transport"],
+["¿Pasa el autobús por aquí?","Does the bus go through here?","autobús","transport"],
+["¿Dónde está la parada del bus?","Where is the bus stop?","parada","transport"],
+["¿A qué hora sale el siguiente?","What time does the next one leave?","siguiente","transport"],
+["¿Cuánto tarda en llegar al aeropuerto?","How long does it take to get to the airport?","aeropuerto","transport"],
+["Necesito ir a la estación de tren.","I need to go to the train station.","estación","transport"],
+["¿Me puede dejar en esta esquina?","Can you drop me at this corner?","esquina","transport"],
+["¿Puedo alquilar una bicicleta?","Can I rent a bicycle?","bicicleta","transport"],
+["¿Hay servicio de bus nocturno?","Is there a night bus service?","nocturno","transport"],
+["¿Cuánto cuesta el bono bus?","How much is the bus pass?","bono","transport"],
+["¿Cuál es la mejor ruta para evitar el tráfico?","What is the best route to avoid traffic?","tráfico","transport"],
+["¿Dónde está el punto de carga eléctrico?","Where is the electric charging point?","carga","transport"],
+["¿Dónde recojo el coche de alquiler?","Where do I collect the hire car?","alquiler","transport"],
+["¿Necesito hacer la cama yo?","Do I need to make the bed myself?","cama","home"],
+["¿Dónde están las llaves de repuesto?","Where are the spare keys?","llaves","home"],
+["No funciona el aire acondicionado.","The air conditioning isn't working.","acondicionado","home"],
+["¿Cómo funciona la calefacción?","How does the heating work?","calefacción","home"],
+["Hay una gotera en el baño.","There's a leak in the bathroom.","gotera","home"],
+["Se ha ido la luz.","The electricity has gone off.","luz","home"],
+["No hay agua caliente.","There's no hot water.","caliente","home"],
+["¿Tiene wifi el apartamento?","Does the apartment have wifi?","wifi","home"],
+["¿A qué hora hay que dejar el apartamento?","What time do we need to leave the apartment?","dejar","home"],
+["¿Puedo tender ropa en la terraza?","Can I hang washing on the terrace?","tender","home"],
+["¿Con qué frecuencia recogen la basura?","How often do they collect the rubbish?","frecuencia","home"],
+["El frigorífico hace mucho ruido.","The fridge makes a lot of noise.","frigorífico","home"],
+["¿El contrato incluye los gastos?","Does the contract include bills?","contrato","home"],
+["¿Puedo quedarme una semana más?","Can I stay for one more week?","quedarme","home"],
+["¿Qué temperatura hace hoy?","What temperature is it today?","temperatura","weather"],
+["Parece que va a llover.","It looks like it's going to rain.","llover","weather"],
+["¡Qué calor hace!","It's so hot!","calor","weather"],
+["Hay mucha humedad hoy.","It's very humid today.","humedad","weather"],
+["El viento de levante está muy fuerte.","The Levante wind is very strong.","levante","weather"],
+["¿Para cuándo viene la tormenta?","When is the storm coming?","tormenta","weather"],
+["Esta tarde refrescará.","It will cool down this afternoon.","refrescará","weather"],
+["Las noches son muy agradables aquí.","The nights are very pleasant here.","noches","weather"],
+["En agosto hace un calor insoportable.","In August it's unbearably hot.","insoportable","weather"],
+["El pronóstico dice que lloverá mañana.","The forecast says it will rain tomorrow.","pronóstico","weather"],
+["Hace un tiempo perfecto para la playa.","It's perfect weather for the beach.","perfecto","weather"],
+["La calima trae arena del Sahara.","The haze brings sand from the Sahara.","calima","weather"],
+["Está nublado pero no hace frío.","It's cloudy but not cold.","nublado","weather"],
+["Esta semana habrá sol todos los días.","This week there will be sun every day.","sol","weather"],
+["El atardecer esta noche será espectacular.","Tonight's sunset will be spectacular.","atardecer","weather"],
+["Necesito ver a un médico.","I need to see a doctor.","médico","health"],
+["¿Dónde está el centro de salud?","Where is the health centre?","salud","health"],
+["Me duele la cabeza mucho.","I have a bad headache.","cabeza","health"],
+["Tengo fiebre.","I have a fever.","fiebre","health"],
+["¿Tiene algo para el dolor de estómago?","Do you have something for stomach ache?","dolor","health"],
+["Soy alérgico a la penicilina.","I'm allergic to penicillin.","alérgico","health"],
+["Necesito una receta médica.","I need a prescription.","receta","health"],
+["¿Dónde está la farmacia de guardia?","Where is the duty pharmacy?","guardia","health"],
+["Me he hecho daño en el tobillo.","I've hurt my ankle.","tobillo","health"],
+["Me han picado mucho los mosquitos.","The mosquitos have bitten me a lot.","mosquitos","health"],
+["Necesito algo para la diarrea.","I need something for diarrhoea.","diarrea","health"],
+["Me duele la garganta.","My throat hurts.","garganta","health"],
+["¿Hace falta cita previa?","Do I need an appointment?","cita","health"],
+["¿Puedo tomar esto con alcohol?","Can I take this with alcohol?","alcohol","health"],
+["¿Qué planes tienes para el verano?","What plans do you have for the summer?","planes","social"],
+["¿Sales esta noche?","Are you going out tonight?","sales","social"],
+["¿Cuánto tiempo llevas en Almería?","How long have you been in Almería?","llevas","social"],
+["Vamos a celebrar mi cumpleaños.","We're going to celebrate my birthday.","celebrar","social"],
+["¿Te apuntas a la excursión?","Are you joining the excursion?","apuntas","social"],
+["Hay una fiesta en la terraza del bar.","There's a party on the bar terrace.","fiesta","social"],
+["¿A qué te dedicas?","What do you do for work?","dedicas","social"],
+["Trabajo en remoto desde aquí.","I work remotely from here.","remoto","social"],
+["Me encanta la gastronomía de aquí.","I love the food culture here.","gastronomía","social"],
+["¿Conoces algún buen restaurante?","Do you know any good restaurants?","conoces","social"],
+["Soy inglés pero vivo aquí parte del año.","I'm English but I live here part of the year.","inglés","social"],
+["¿Vienes a Almería todos los años?","Do you come to Almería every year?","años","social"],
+["Quedamos el jueves para cenar.","Let's meet Thursday for dinner.","jueves","social"],
+["¿Me das tu número de teléfono?","Can you give me your phone number?","teléfono","social"],
+["Fue una noche estupenda.","It was a wonderful evening.","estupenda","social"],
+["¡Hasta la próxima vez!","Until next time!","próxima","social"],
+["¿Habla inglés?","Do you speak English?","inglés","general"],
+["No entiendo, ¿puede repetir más despacio?","I don't understand, can you repeat more slowly?","despacio","general"],
+["¿Cómo se dice esto en español?","How do you say this in Spanish?","dice","general"],
+["Estoy aprendiendo español.","I am learning Spanish.","aprendiendo","general"],
+["Por favor, hable más despacio.","Please speak more slowly.","hable","general"],
+["Muchas gracias por su ayuda.","Thank you very much for your help.","gracias","general"],
+["Perdone, me he equivocado.","Sorry, I made a mistake.","equivocado","general"],
+["¿Dónde está el banco más cercano?","Where is the nearest bank?","banco","general"],
+["¿Qué hora es?","What time is it?","hora","general"],
+["Me alegra verte de nuevo.","I'm glad to see you again.","alegra","general"],
+["¡Bienvenido a Almería!","Welcome to Almería!","bienvenido","general"],
+["Estoy perdido.","I am lost.","perdido","general"],
+["Necesito cargar el teléfono.","I need to charge my phone.","cargar","general"],
+["Voy a madrugar mañana.","I'm going to get up early tomorrow.","madrugar","general"],
+["Necesito descansar un poco.","I need to rest a bit.","descansar","general"],
+["Me gusta mucho la arquitectura árabe de la Alcazaba.","I really like the Arab architecture of the Alcazaba.","árabe","general"],
+["Almería tiene un clima muy seco y soleado.","Almería has a very dry and sunny climate.","soleado","general"],
+["¿Hay visitas guiadas al desierto de Tabernas?","Are there guided tours to the Tabernas desert?","guiadas","general"],
+["El Cabo de Gata es un paraje natural único.","Cabo de Gata is a unique natural area.","paraje","general"],
+["El mercado central abre por las mañanas.","The central market opens in the mornings.","mercado","general"],
+["Voy a dar un paseo por el casco antiguo.","I'm going for a walk around the old town.","paseo","general"],
+["¿Hay ferry desde Almería a Marruecos?","Is there a ferry from Almería to Morocco?","ferry","general"],
+["¿Cuándo es la feria de Almería?","When is the Almería fair?","feria","general"],
+["La uva de Almería es famosa en toda España.","Almería's grapes are famous throughout Spain.","uva","general"],
+["Los invernaderos de Almería son los más grandes de Europa.","Almería's greenhouses are the largest in Europe.","invernaderos","general"],
+["Almería tiene más horas de sol que cualquier otra ciudad española.","Almería has more sunshine hours than any other Spanish city.","horas","general"],
+["¿Hay rutas de senderismo cerca?","Are there hiking routes nearby?","senderismo","general"],
+["¿Dónde está el museo de arte?","Where is the art museum?","museo","general"],
+["¿Hay conciertos al aire libre en verano?","Are there open air concerts in summer?","conciertos","general"],
+["¿Cuándo cierra el ayuntamiento?","When does the town hall close?","ayuntamiento","general"],
+["¿Me puede dar un mapa de la ciudad?","Can you give me a map of the city?","mapa","general"],
+["La noche en Almería empieza tarde.","The night in Almería starts late.","noche","general"],
+["¿Es necesario reservar con antelación?","Is it necessary to book in advance?","antelación","general"],
+["¿Hay playas con bandera azul cerca?","Are there blue flag beaches nearby?","bandera","general"],
+["Las noches de verano en el puerto son mágicas.","The summer nights at the port are magical.","puerto","general"],
+["¿Dónde puedo ver la puesta de sol?","Where can I watch the sunset?","puesta","general"],
+["¿Dónde está la oficina de turismo?","Where is the tourist office?","turismo","general"],
+["¿Hay algún festival de música en verano?","Is there a music festival in summer?","festival","general"],
+["El mar Mediterráneo es el mejor del mundo.","The Mediterranean Sea is the best in the world.","Mediterráneo","general"],
+["¿Dónde está la catedral de Almería?","Where is the Almería cathedral?","catedral","general"],
+["La catedral de Almería parece una fortaleza.","The Almería cathedral looks like a fortress.","fortaleza","general"],
+["¿Se puede hacer snorkel en las calas?","Can you snorkel in the coves?","snorkel","general"],
+["¿Dónde está el mejor mirador de la ciudad?","Where is the best viewpoint in the city?","mirador","general"],
+["¿Cuándo hay luna llena este mes?","When is the full moon this month?","luna","general"],
+["¿Cuándo llegaron los árabes a Almería?","When did the Arabs arrive in Almería?","árabes","general"],
+["Gracias por todo, ha sido un placer.","Thank you for everything, it has been a pleasure.","placer","general"]
+];
+
+// STATE
+let state = {
+  dailyCount: 20,
+  todayDate: '',
+  todayQueue: [],
+  todayDone: [],
+  todayAgain: [],
+  knownIds: [],
+  streak: 0,
+  lastDoneDate: '',
+  autoplay: false,
+  cardFlipped: false,
+  activeBrowseCat: 'all'
+};
+
+function loadState(){
+  const s = localStorage.getItem('almeria_state');
+  if(s){ try{ Object.assign(state, JSON.parse(s)); }catch(e){} }
+}
+function saveState(){
+  localStorage.setItem('almeria_state', JSON.stringify(state));
+}
+function saveSettings(){
+  state.autoplay = document.getElementById('autoplay-toggle').checked;
+  saveState();
+  updateToggleUI();
+}
+function updateToggleUI(){
+  const t = document.getElementById('autoplay-toggle');
+  const track = document.getElementById('toggle-track');
+  const thumb = document.getElementById('toggle-thumb');
+  if(t.checked){ track.style.background='#2d5a27'; thumb.style.left='21px'; }
+  else { track.style.background='#ccc'; thumb.style.left='3px'; }
+}
+
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function initToday(){
+  const today = todayStr();
+  if(state.todayDate !== today){
+    // new day — build fresh queue, update streak
+    if(state.lastDoneDate){
+      const last = new Date(state.lastDoneDate);
+      const diff = (new Date(today) - last)/(1000*60*60*24);
+      if(diff <= 1.5) state.streak++;
+      else state.streak = 1;
+    } else { state.streak = 1; }
+    // Shuffle all sentences, prioritise unseen
+    const seen = new Set(state.knownIds);
+    const unseen = ALL.map((_,i)=>i).filter(i=>!seen.has(i));
+    const seenArr = ALL.map((_,i)=>i).filter(i=>seen.has(i));
+    const pool = [...shuffle(unseen), ...shuffle(seenArr)];
+    state.todayQueue = pool.slice(0, state.dailyCount);
+    state.todayDone = [];
+    state.todayAgain = [];
+    state.todayDate = today;
+    saveState();
+  }
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function adjustDaily(delta){
+  state.dailyCount = Math.max(5, Math.min(50, state.dailyCount + delta));
+  document.getElementById('daily-display').textContent = state.dailyCount;
+  document.getElementById('daily-display-lg').textContent = state.dailyCount;
+  // rebuild today's queue if we increased
+  if(state.todayDate === todayStr() && state.dailyCount > state.todayQueue.length + state.todayDone.length){
+    const alreadyUsed = new Set([...state.todayQueue, ...state.todayDone]);
+    const extra = ALL.map((_,i)=>i).filter(i=>!alreadyUsed.has(i));
+    const need = state.dailyCount - state.todayQueue.length - state.todayDone.length;
+    state.todayQueue = [...state.todayQueue, ...shuffle(extra).slice(0, need)];
+  }
+  saveState();
+  renderToday();
+  renderStats();
+}
+
+// ── TODAY RENDER ──
+function renderToday(){
+  document.getElementById('streak-val').textContent = state.streak;
+  document.getElementById('daily-display').textContent = state.dailyCount;
+  const total = state.todayDone.length + state.todayQueue.length + state.todayAgain.length;
+  const done = state.todayDone.length;
+  document.getElementById('progress-text').textContent = done + ' / ' + total;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const now = new Date();
+  document.getElementById('today-date').textContent = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+
+  const stack = document.getElementById('card-stack');
+  const queue = [...state.todayAgain, ...state.todayQueue];
+  if(queue.length === 0 && total > 0){
+    stack.innerHTML = `<div class="done-state">
+      <div class="done-icon">🎉</div>
+      <h2>¡Muy bien!</h2>
+      <p>You've completed today's ${done} cards.<br>Come back tomorrow to keep your streak going.</p>
+      <button class="btn-primary" onclick="addMoreCards()">Practice more cards</button>
+    </div>`;
+    state.lastDoneDate = todayStr();
+    saveState();
+    return;
+  }
+  if(queue.length === 0 && total === 0){
+    stack.innerHTML = `<div class="done-state"><div class="done-icon">👋</div><h2>Ready to start?</h2><p>Tap below to begin today's session.</p><button class="btn-primary" onclick="initToday();renderToday()">Start</button></div>`;
+    return;
+  }
+
+  state.cardFlipped = false;
+  const idx = queue[0];
+  const card = ALL[idx];
+  stack.innerHTML = `<div class="flashcard" id="main-card" onclick="flipCard()">
+    <button class="audio-btn" onclick="event.stopPropagation();speakCard('${escQ(card[0])}')" title="Listen">🔊</button>
+    <div class="card-cat cc-${card[3]}">${CAT_LABELS[card[3]]||card[3]}</div>
+    <div class="card-es">${card[0]}</div>
+    <span class="card-kw">${card[2]}</span>
+    <div class="card-en" id="card-en">${card[1]}</div>
+    <div class="card-tap-hint" id="tap-hint">Tap to reveal translation</div>
+    <div class="card-actions hidden" id="card-actions">
+      <button class="btn-again" onclick="event.stopPropagation();markAgain(${idx})">Practice again</button>
+      <button class="btn-knew" onclick="event.stopPropagation();markKnew(${idx})">Got it ✓</button>
+    </div>
+  </div>`;
+  if(state.autoplay) setTimeout(()=>speakCard(card[0]),300);
+}
+
+function escQ(s){ return s.replace(/'/g,"\\'"); }
+
+function flipCard(){
+  if(state.cardFlipped) return;
+  state.cardFlipped = true;
+  document.getElementById('card-en').classList.add('visible');
+  document.getElementById('tap-hint').style.display='none';
+  document.getElementById('card-actions').classList.remove('hidden');
+}
+
+function markKnew(idx){
+  animateCard('swipe-right', ()=>{
+    state.todayAgain = state.todayAgain.filter(i=>i!==idx);
+    state.todayQueue = state.todayQueue.filter(i=>i!==idx);
+    if(!state.todayDone.includes(idx)) state.todayDone.push(idx);
+    if(!state.knownIds.includes(idx)) state.knownIds.push(idx);
+    saveState(); renderToday();
+  });
+}
+
+function markAgain(idx){
+  animateCard('swipe-left', ()=>{
+    state.todayQueue = state.todayQueue.filter(i=>i!==idx);
+    state.todayAgain = state.todayAgain.filter(i=>i!==idx);
+    state.todayAgain.push(idx);
+    saveState(); renderToday();
+  });
+}
+
+function animateCard(cls, cb){
+  const c = document.getElementById('main-card');
+  if(!c){ cb(); return; }
+  c.classList.add(cls);
+  setTimeout(cb, 280);
+}
+
+function addMoreCards(){
+  const used = new Set([...state.todayDone, ...state.todayQueue, ...state.todayAgain]);
+  const extra = shuffle(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);
+  state.todayQueue = [...extra];
+  saveState(); renderToday();
+}
+
+function speakCard(text){
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='es-ES'; u.rate=0.85;
+  window.speechSynthesis.speak(u);
+}
+
+// ── BROWSE RENDER ──
+function renderBrowse(){
+  const q = document.getElementById('browse-search').value.toLowerCase();
+  const cat = state.activeBrowseCat;
+  const filtered = ALL.filter(r=>{
+    const cm = cat==='all'||r[3]===cat;
+    const qm = !q||r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q)||r[2].toLowerCase().includes(q);
+    return cm&&qm;
+  });
+  document.getElementById('browse-count').textContent = filtered.length + ' sentences';
+  document.getElementById('browse-list').innerHTML = filtered.map((r,i)=>`
+    <div class="browse-card">
+      <div class="es">${r[0]}</div>
+      <div class="en">${r[1]}</div>
+      <div class="browse-card-foot">
+        <span class="bc-cat cc-${r[3]}">${CAT_LABELS[r[3]]||r[3]}</span>
+        <span class="bc-kw">${r[2]}</span>
+        <button class="bc-audio" onclick="speakCard('${escQ(r[0])}')" title="Listen">🔊</button>
+      </div>
+    </div>`).join('');
+}
+
+function initBrowseCats(){
+  const cats = ['all',...Object.keys(CAT_LABELS)];
+  document.getElementById('cat-pills').innerHTML = cats.map(c=>`
+    <button class="cat-pill${state.activeBrowseCat===c?' active':''}" onclick="setBrowseCat('${c}')">${c==='all'?'All':CAT_LABELS[c]||c}</button>`).join('');
+}
+function setBrowseCat(c){ state.activeBrowseCat=c; initBrowseCats(); renderBrowse(); }
+
+// ── STATS ──
+function renderStats(){
+  document.getElementById('daily-display-lg').textContent = state.dailyCount;
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${state.knownIds.length}</div><div class="stat-lbl">Words learned</div></div>
+    <div class="stat-box"><div class="stat-num">${ALL.length - state.knownIds.length}</div><div class="stat-lbl">Still to learn</div></div>
+    <div class="stat-box"><div class="stat-num">${state.streak}</div><div class="stat-lbl">Day streak 🔥</div></div>
+    <div class="stat-box"><div class="stat-num">${state.dailyCount}</div><div class="stat-lbl">Daily goal</div></div>`;
+  const t = document.getElementById('autoplay-toggle');
+  t.checked = state.autoplay;
+  updateToggleUI();
+}
+
+function confirmReset(){
+  if(confirm('Reset all progress? This cannot be undone.')){
+    state.knownIds=[]; state.streak=0; state.lastDoneDate=''; state.todayDate=''; state.todayDone=[]; state.todayQueue=[]; state.todayAgain=[];
+    saveState(); initToday(); renderToday(); renderStats();
+  }
+}
+
+// ── SCREENS ──
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='browse'){ initBrowseCats(); renderBrowse(); }
+  if(name==='settings'){ renderStats(); }
+}
+
+// ── INIT ──
+loadState();
+initToday();
+renderToday();
+</script>
+</body>
+</html>
