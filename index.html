@@ -83,13 +83,18 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .card-overlay{display:none}
 .card-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:20px 20px 18px}
 .card-cat-badge{align-self:flex-start;font-size:10px;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600}
-.card-audio{position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:50%;background:var(--white2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.card-audio{position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:50%;background:#000;border:1.5px solid #000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 1px 4px rgba(0,0,0,0.25)}
 .card-audio:active{transform:scale(0.9)}
 .card-body{margin-top:auto}
 .card-es{font-family:'Poppins',sans-serif;font-size:22px;font-weight:600;color:#000;line-height:1.3;margin-bottom:8px;text-shadow:none}
 .card-kw{display:inline-block;background:#f0e8d0;color:#000;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;margin-bottom:12px;font-family:'Poppins',sans-serif}
 .card-en{font-family:'Poppins',sans-serif;font-size:14px;font-weight:400;color:#111;line-height:1.55;padding-top:12px;border-top:1px solid var(--white2);display:none}
 .card-en.show{display:block}
+.w{display:inline;cursor:pointer;position:relative;border-radius:3px;padding:0 1px;transition:background 0.15s;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px;text-decoration-color:rgba(27,78,120,0.35)}
+.w.active{background:rgba(27,78,120,0.1)}
+.phrase-w{text-decoration-color:rgba(196,98,45,0.5);text-decoration-style:dotted}
+.w-tip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.97);border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:11px;color:#555;white-space:normal;max-width:140px;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,0.12);font-weight:400;font-family:'Poppins',sans-serif}
+.w.active .w-tip{opacity:1}
 .card-hint{font-size:11px;color:#444;text-align:center;padding:10px 0 0;font-family:'DM Sans',sans-serif}
 .card-actions{display:none;gap:10px;padding-top:12px}
 .card-actions.show{display:flex}
@@ -258,6 +263,17 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
           <input type="checkbox" id="auto-toggle" onchange="saveSettings()">
           <span class="toggle-track" id="tog-track"></span>
           <span class="toggle-thumb" id="tog-thumb"></span>
+        </label>
+      </div>
+    </div>
+    <div class="s-card">
+      <h3>Card mode</h3>
+      <div class="s-row">
+        <div><div class="s-label">English → Spanish</div><div class="s-sub">Show English first, reveal Spanish</div></div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="rev-toggle" onchange="saveSettings()">
+          <span class="toggle-track" id="rev-track"></span>
+          <span class="toggle-thumb" id="rev-thumb"></span>
         </label>
       </div>
     </div>
@@ -745,16 +761,24 @@ const ALL=[
 ["¿Cuándo se usa ser y cuándo estar?","When do you use ser and when estar?","cuándo","general"],
 ];
 // ── STATE ──
-let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,browseCat:'all'};
+let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,reversed:false,browseCat:'all'};
 
 function load(){const d=localStorage.getItem('alm3');if(d){try{Object.assign(S,JSON.parse(d))}catch(e){}}}
 function save(){localStorage.setItem('alm3',JSON.stringify(S))}
-function saveSettings(){S.autoplay=document.getElementById('auto-toggle').checked;save();updateToggle()}
+function saveSettings(){
+  S.autoplay=document.getElementById('auto-toggle').checked;
+  S.reversed=document.getElementById('rev-toggle').checked;
+  save();updateToggle();
+}
 function updateToggle(){
   const on=S.autoplay;
   document.getElementById('auto-toggle').checked=on;
   document.getElementById('tog-track').style.background=on?'#2A7FB5':'#ccc';
   document.getElementById('tog-thumb').style.left=on?'21px':'3px';
+  const rv=S.reversed;
+  document.getElementById('rev-toggle').checked=rv;
+  document.getElementById('rev-track').style.background=rv?'#2A7FB5':'#ccc';
+  document.getElementById('rev-thumb').style.left=rv?'21px':'3px';
 }
 function todayStr(){return new Date().toISOString().slice(0,10)}
 
@@ -812,6 +836,286 @@ function browseImgTag(idx){
 }
 
 // ── TODAY RENDER ──
+// Spanish → English word lookup
+const WM={
+  "hay":"there is/are","sitio":"spot","en":"in/on","la":"the","el":"the",
+  "arena":"sand","aqui":"here","aquí":"here","agua":"water","muy":"very",
+  "fria":"cold","fría":"cold","frio":"cold","frío":"cold","hoy":"today",
+  "puedes":"can you","guardar":"to watch/keep","mis":"my","cosas":"things",
+  "necesito":"I need","sombrilla":"umbrella","para":"for","sol":"sun",
+  "olas":"waves","estan":"are","están":"are","grandes":"big","esta":"this",
+  "este":"this","estos":"these","estas":"these","manana":"morning/tomorrow",
+  "mañana":"morning/tomorrow","que":"what","qué":"what","hora":"time/hour",
+  "abre":"opens","abren":"open","playa":"beach","chiringuito":"beach bar",
+  "voy":"I go/going","bañarme":"to swim","rato":"a while","quemado":"burned",
+  "paseo":"promenade/walk","maritimo":"seafront","marítimo":"seafront",
+  "bonito":"nice","segura":"safe","nadar":"to swim","muchas":"many","mucha":"a lot of",
+  "medusas":"jellyfish","puedo":"can I","alquilar":"to rent","tumbona":"sun lounger",
+  "tengo":"I have","todas":"all","partes":"places","pone":"sets","tarde":"late/afternoon",
+  "verano":"summer","mas":"more","más":"more","crema":"cream","solar":"sun",
+  "duchas":"showers","cerca":"nearby","hasta":"until","boya":"buoy","hace":"it is/makes",
+  "mucho":"a lot","cuanto":"how much","cuánto":"how much","cuesta":"costs",
+  "silla":"chair","calma":"calm","bandera":"flag","roja":"red","ninos":"children",
+  "niños":"children","jugando":"playing","orilla":"shore","quedamos":"we meet/stay",
+  "quedaremos":"we will stay","quedarme":"to stay","atardecer":"sunset",
+  "salvavidas":"lifeguard","atento":"attentive/alert","dejar":"to leave",
+  "mientras":"while","fondo":"seabed/bottom","precioso":"beautiful",
+  "permitido":"allowed","surf":"surfing","bañador":"swimsuit","tienes":"do you have",
+  "toalla":"towel","sobra":"spare","transparente":"clear","aparcamiento":"parking",
+  "encanta":"I love","rincon":"spot/corner","rincón":"spot/corner",
+  "recogen":"they collect","hamacas":"sun loungers","cierra":"closes",
+  "cierran":"close","doce":"twelve","conchas":"shells","huele":"smells",
+  "sal":"salt","socorrista":"lifeguard","torre":"tower","metros":"metres",
+  "cala":"cove","prefiero":"I prefer","sombra":"shade","pega":"beats down",
+  "mediodia":"midday","mediodía":"midday","horizonte":"horizon","tormenta":"storm",
+  "mesa":"table","libre":"free","reservar":"to book","cual":"which","cuál":"which",
+  "plato":"dish","dia":"day","día":"day","carta":"menu","recomienda":"recommend",
+  "favor":"please","cuenta":"bill","cuando":"when","incluido":"included",
+  "servicio":"service","alergia":"allergy","marisco":"seafood","sin":"without",
+  "gluten":"gluten","algo":"something","vegetariano":"vegetarian","rico":"delicious",
+  "gracias":"thank you","pan":"bread","otro":"another","ensalada":"salad",
+  "mixta":"mixed","gazpacho":"gazpacho","pescado":"fish","fresco":"fresh",
+  "paella":"paella","tarda":"takes (time)","veinte":"twenty","minutos":"minutes",
+  "servilletas":"napkins","tarjeta":"card","terraza":"terrace","picante":"spicy",
+  "racion":"portion","ración":"portion","patatas":"potatoes","aceite":"oil",
+  "vinagre":"vinegar","noche":"night/tonight","cambiar":"to change","casero":"homemade",
+  "tierra":"local/land","trae":"bring","lleva":"contains/takes","propina":"tip",
+  "postres":"desserts","espera":"wait","pulpo":"octopus","brasa":"grill",
+  "increible":"incredible","increíble":"incredible","lactosa":"lactose",
+  "caña":"small beer","barril":"draught","tapas":"tapas","vino":"wine",
+  "tinto":"red (wine)","casa":"house","tonica":"tonic","tónica":"tonic",
+  "ginebra":"gin","cortado":"cortado","mitad":"half","desayunos":"breakfasts",
+  "tostada":"toast","cafe":"coffee","café":"coffee","con":"with","mismo":"same",
+  "zumo":"juice","naranja":"orange","natural":"fresh","manzanilla":"manzanilla",
+  "partido":"match","funciona":"works","wifi":"wifi","contrasena":"password",
+  "contraseña":"password","invitar":"to invite","ronda":"round","todos":"everyone",
+  "musica":"music","música":"music","cocteles":"cocktails","cócteles":"cocktails",
+  "mineral":"mineral","recibo":"receipt","aceitunas":"olives","todo":"everything",
+  "vermut":"vermouth","clara":"shandy","limon":"lemon","limón":"lemon",
+  "cacahuetes":"peanuts","cobran":"they charge","chupito":"shot","sidra":"cider",
+  "hielo":"ice","vaso":"glass","dias":"days/morning","días":"days/morning",
+  "vecino":"neighbour","familia":"family","tiempo":"weather/time","pareja":"partner",
+  "molesta":"bothers","ruido":"noise","corte":"cut/outage","momento":"moment",
+  "perdone":"sorry","basura":"rubbish","compra":"shopping","volumen":"volume",
+  "bienvenido":"welcome","barrio":"neighbourhood","ascensor":"lift",
+  "estropeado":"broken","portal":"main door","jardin":"garden","jardín":"garden",
+  "cuidado":"well-kept","cartero":"postman","gato":"cat","reunion":"meeting",
+  "reunión":"meeting","llaves":"keys","fontanero":"plumber","administrador":"manager",
+  "obras":"works","fuera":"away","paquete":"parcel","portero":"intercom",
+  "averia":"fault","avería":"fault","rellano":"landing","socio":"member",
+  "cuota":"fee","clases":"classes","vestuarios":"changing rooms",
+  "taquillas":"lockers","maquina":"machine","máquina":"machine","piscina":"pool",
+  "prueba":"trial","entrenador":"trainer","pesas":"weights","resistencia":"endurance",
+  "domingos":"sundays","cardio":"cardio","rutina":"routine","semana":"week",
+  "principiantes":"beginners","aire":"air","acondicionado":"conditioning",
+  "yoga":"yoga","zumba":"zumba","invitado":"guest","fisioterapia":"physio",
+  "viernes":"friday/fridays","congelar":"to freeze","rodilla":"knee","remo":"rowing",
+  "estirar":"to stretch","fuerza":"strength","zona":"area","supermercado":"supermarket",
+  "tienda":"shop","talla":"size","devoluciones":"returns","oferta":"sale/offer",
+  "caja":"checkout","frutas":"fruit","verduras":"vegetables","pilas":"batteries",
+  "mando":"remote","barato":"cheap","cordero":"lamb","detergente":"detergent",
+  "suavizante":"fabric softener","farmacia":"pharmacy","regalo":"gift","jamon":"ham",
+  "jamón":"ham","limpieza":"cleaning","efectivo":"cash","tomates":"tomatoes",
+  "congelados":"frozen foods","queso":"cheese","descuento":"discount",
+  "especias":"spices","higiene":"hygiene","carrera":"fare","autobus":"bus",
+  "autobús":"bus","parada":"stop","siguiente":"next","aeropuerto":"airport",
+  "estacion":"station","estación":"station","esquina":"corner","bicicleta":"bicycle",
+  "nocturno":"night service","bono":"pass","trafico":"traffic","tráfico":"traffic",
+  "alquiler":"hire/rental","taxi":"taxi","billete":"ticket","maletero":"boot (car)",
+  "linea":"line","línea":"line","carril":"lane","cama":"bed","calefaccion":"heating",
+  "calefacción":"heating","gotera":"leak","luz":"light/electricity","caliente":"hot",
+  "ropa":"clothes","frigorifico":"fridge","frigorífico":"fridge","contrato":"contract",
+  "interruptor":"switch","plancha":"iron","contador":"meter","vater":"toilet",
+  "váter":"toilet","aspiradora":"vacuum cleaner","organica":"organic","orgánica":"organic",
+  "mosquiteras":"mosquito nets","botiquin":"first aid","botiquín":"first aid",
+  "llave":"key/tap","mar":"sea","temperatura":"temperature","calor":"heat",
+  "humedad":"humidity","levante":"levante wind","niebla":"fog","brisa":"breeze",
+  "grados":"degrees","medico":"doctor","médico":"doctor","salud":"health",
+  "cabeza":"head","fiebre":"fever","dolor":"pain/ache","alergico":"allergic",
+  "alérgico":"allergic","receta":"prescription","tobillo":"ankle","diarrea":"diarrhoea",
+  "garganta":"throat","cita":"appointment","tirita":"plaster","picaduras":"insect bites",
+  "oido":"ear","oído":"ear","pastillas":"tablets","mareo":"dizziness",
+  "erupcion":"rash","erupción":"rash","hospital":"hospital","espalda":"back",
+  "analisis":"blood test","análisis":"blood test","tension":"blood pressure",
+  "tensión":"blood pressure","cumpleanos":"birthday","cumpleaños":"birthday",
+  "fiesta":"party","gastronomia":"food culture","gastronomía":"food culture",
+  "anos":"years","años":"years","jueves":"thursday","telefono":"phone",
+  "teléfono":"phone","barbacoa":"barbecue","kayaks":"kayaks","placer":"pleasure",
+  "banco":"bank","perdido":"lost","madrugar":"get up early","mercado":"market",
+  "ferry":"ferry","feria":"fair/festival","uva":"grape","invernaderos":"greenhouses",
+  "museo":"museum","ayuntamiento":"town hall","mapa":"map","puerto":"port",
+  "catedral":"cathedral","mirador":"viewpoint","luna":"moon","indalo":"indalo",
+  "simbolo":"symbol","símbolo":"symbol","vocabulario":"vocabulary",
+  "subjuntivo":"subjunctive","acento":"accent","expresion":"expression",
+  "expresión":"expression","esta":"is/this","estoy":"I am","estan":"they are",
+  "es":"is","son":"are","soy":"I am","tiene":"has/do you have","tienen":"do you have",
+  "puede":"can/is able","pueden":"they can","quiero":"I want","quisiera":"I would like",
+  "ponme":"give me","busco":"I am looking for","hay":"there is/are",
+  "vienen":"they come","viene":"he/she comes","dice":"says/means",
+  "aprendiendo":"learning","hable":"speak","equivocado":"wrong/mistaken",
+  "perdido":"lost","cargar":"to charge","descansar":"to rest","arabe":"arab/moorish",
+  "árabe":"arab/moorish","soleado":"sunny","guiadas":"guided","paraje":"natural area",
+  "casco":"old (town)","antiguo":"old","invernaderos":"greenhouses",
+  "senderismo":"hiking","conciertos":"concerts","antela":"advance","azul":"blue",
+  "puesta":"setting (sun)","turismo":"tourism","festival":"festival",
+  "mediterraneo":"mediterranean","mediterráneo":"mediterranean","fortaleza":"fortress",
+  "snorkel":"snorkel","llena":"full","arabes":"arabs","árabes":"arabs",
+  "dinero":"money","comisaria":"police station","comisaría":"police station",
+  "cobertura":"signal/coverage","recomendacion":"recommendation","codigo":"postcode",
+  "cajero":"cash machine","imprimir":"to print","papeleria":"stationery",
+  "papelería":"stationery","mercadillo":"street market","biblioteca":"library",
+  "llamar":"to call","pedido":"order","conexion":"connection","extranjera":"foreign",
+  "cargador":"charger","portatil":"laptop","portátil":"laptop","reciclar":"to recycle",
+  "botellas":"bottles","correos":"post office","sellos":"stamps",
+  "lavanderia":"laundry","lavandería":"laundry","moto":"motorbike",
+  "equipaje":"luggage","consigna":"left luggage","bolsa":"bag","mayores":"seniors",
+  "futbol":"football","fútbol":"football","entradas":"tickets","evento":"event",
+  "flamenco":"flamenco","organizada":"organised","almuerzo":"lunch","bucear":"to dive",
+  "cursos":"courses","idioma":"language","artesania":"crafts","artesanía":"crafts",
+  "amable":"friendly","dialecto":"dialect","comida":"food","tipica":"typical",
+  "típica":"typical","significa":"means","todavia":"yet/still","todavía":"yet/still",
+  "intentando":"trying","pronuncia":"pronounces","correcto":"correct",
+  "conmigo":"with me","diferencia":"difference","lunes":"monday","martes":"tuesday",
+  "miercoles":"wednesday","miércoles":"wednesday","sabado":"saturday","sábado":"saturday",
+  "domingo":"sunday","mes":"month","año":"year","invierno":"winter",
+  "primavera":"spring","otono":"autumn","otoño":"autumn"
+};
+
+// Word translation cache - persists for session
+const CACHE={};
+
+// Common Spanish phrases → English
+const PHRASES={
+  "otra vez":"again","a veces":"sometimes","de nada":"you're welcome",
+  "por favor":"please","muchas gracias":"thank you very much",
+  "buenos días":"good morning","buenas tardes":"good afternoon",
+  "buenas noches":"good evening","con gas":"sparkling","sin gas":"still",
+  "de acuerdo":"agreed/ok","en seguida":"right away","sin embargo":"however",
+  "todo el mundo":"everyone","de vez en cuando":"from time to time",
+  "a la derecha":"to the right","a la izquierda":"to the left",
+  "al final":"at the end","al principio":"at the beginning",
+  "de repente":"suddenly","en realidad":"actually","por supuesto":"of course",
+  "a pie":"on foot","en serio":"seriously","por eso":"that's why",
+  "sin duda":"without doubt","tal vez":"maybe","lo siento":"I'm sorry",
+  "hace calor":"it's hot","hace frío":"it's cold","hace viento":"it's windy",
+  "hace sol":"it's sunny","qué tal":"how are you","cómo estás":"how are you",
+  "me llamo":"my name is","cuánto cuesta":"how much does it cost",
+  "dónde está":"where is","a qué hora":"at what time","cuánto tiempo":"how long",
+  "plato del día":"dish of the day","menú del día":"set menu",
+  "carta de postres":"dessert menu","sin lactosa":"lactose free",
+  "sin gluten":"gluten free","sin picante":"without spice",
+  "agua con gas":"sparkling water","agua sin gas":"still water",
+  "vino tinto":"red wine","vino blanco":"white wine",
+  "café con leche":"white coffee","zumo de naranja":"orange juice",
+  "por las mañanas":"in the mornings","por las noches":"at night",
+  "por la tarde":"in the afternoon","todo recto":"straight ahead",
+  "la cuenta":"the bill","la carta":"the menu","la propina":"the tip",
+  "buen provecho":"enjoy your meal","aceite de oliva":"olive oil",
+  "virgen extra":"extra virgin","en oferta":"on offer",
+  "cuánto es":"how much is it","cómo funciona":"how does it work",
+  "me duele":"it hurts","tengo fiebre":"I have a fever",
+  "hay que":"you need to","lo antes posible":"as soon as possible",
+  "a tiempo":"on time","a la vez":"at the same time",
+  "de ida y vuelta":"return ticket","primera clase":"first class",
+  "por aquí":"around here","no funciona":"doesn't work",
+  "se ha ido":"has gone out","hace ruido":"makes noise",
+  "vistas al mar":"sea views","vista al mar":"sea view",
+  "aire acondicionado":"air conditioning","agua caliente":"hot water",
+  "corte de luz":"power cut","corte de agua":"water cut",
+  "cuántas veces":"how many times","al día":"per day",
+  "a la semana":"per week","al mes":"per month",
+  "en efectivo":"in cash","con tarjeta":"by card",
+  "fin de semana":"weekend","entre semana":"during the week",
+  "casco antiguo":"old town","cabo de gata":"Cabo de Gata",
+  "paseo marítimo":"seafront promenade","parque natural":"natural park",
+  "bandera roja":"red flag","bandera azul":"blue flag",
+  "crema solar":"sun cream","silla de playa":"beach chair",
+  "de la casa":"house (wine)","de acuerdo":"agreed/OK",
+  "a qué":"at what","qué hora":"what time","cuánto tiempo":"how long",
+  "por la mañana":"in the morning","esta mañana":"this morning",
+  "esta tarde":"this afternoon","esta noche":"tonight",
+  "todo incluido":"all inclusive","buen tiempo":"good weather",
+  "mal tiempo":"bad weather","mucho calor":"very hot","mucho frío":"very cold",
+  "lo siento":"I'm sorry","perdone que":"sorry to","muy bien":"very good",
+  "no hay":"there is no","hay mucho":"there is a lot","qué hora es":"what time is it"
+};
+
+function buildWords(text){
+  let result=text;
+  const used=[];
+  // Replace known phrases first (longest first to avoid partial matches)
+  const sortedPhrases=Object.keys(PHRASES).sort((a,b)=>b.length-a.length);
+  sortedPhrases.forEach((phrase,pi)=>{
+    const re=new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    result=result.replace(re,match=>{
+      const eng=PHRASES[phrase];
+      const key=`PHRASE${used.length}END`;
+      used.push(`<span class="w phrase-w" onclick="event.stopPropagation();showPhrase(this)">${match}<span class="w-tip">${eng}</span></span>`);
+      return key;
+    });
+  });
+  // Wrap individual words
+  result=result.split(/(\s+|PHRASE\d+END)/).map(tok=>{
+    if(/^\s+$/.test(tok))return tok;
+    const phraseMatch=tok.match(/^PHRASE(\d+)END$/);
+    if(phraseMatch)return used[parseInt(phraseMatch[1])];
+    const clean=tok.replace(/[¿?.,!¡;:«»""()]/g,'');
+    if(!clean)return tok;
+    return`<span class="w" data-word="${clean}" onclick="event.stopPropagation();lookupWord(this)">${tok}<span class="w-tip">...</span></span>`;
+  }).join('');
+  return result;
+}
+function showPhrase(el){
+  document.querySelectorAll('.w.active').forEach(w=>{if(w!==el)w.classList.remove('active')});
+  el.classList.toggle('active');
+}
+
+async function lookupWord(el){
+  document.querySelectorAll('.w.active').forEach(w=>{if(w!==el)w.classList.remove('active')});
+  el.classList.toggle('active');
+  if(!el.classList.contains('active'))return;
+  const tip=el.querySelector('.w-tip');
+  const word=el.dataset.word;
+  const wordLower=word.toLowerCase();
+  const norm=wordLower.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+  // 1. Static map first
+  const staticHit=WM[wordLower]||WM[norm];
+  if(staticHit){tip.textContent=staticHit;return;}
+
+  // 2. Session cache
+  if(CACHE[norm]==='__none__'){el.classList.remove('active');return;}
+  if(CACHE[norm]){tip.textContent=CACHE[norm];return;}
+
+  tip.textContent='...';
+  try{
+    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=es|en`);
+    const d=await r.json();
+    let t=(d.responseData?.translatedText||'').trim();
+
+    // If useless result, try with context
+    if(!t||t.toLowerCase()===wordLower||t==='?'){
+      const r2=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent('Esto es '+word)}&langpair=es|en`);
+      const d2=await r2.json();
+      t=(d2.responseData?.translatedText||'').replace(/^this is\s*/i,'').replace(/^that is\s*/i,'').trim();
+    }
+
+    // Only show if we got something useful back
+    if(t && t!=='?' && t.toLowerCase()!==wordLower && t.length>0){
+      t=t.charAt(0).toUpperCase()+t.slice(1);
+      CACHE[norm]=t;
+      tip.textContent=t;
+    } else {
+      // Nothing useful — cache the miss, close tooltip silently
+      CACHE[norm]='__none__';
+      el.classList.remove('active');
+    }
+  }catch(e){
+    CACHE[norm]='__none__';
+    el.classList.remove('active');
+  }
+}
+
 function renderToday(){
   document.getElementById('greeting').textContent=greeting();
   document.getElementById('streak-val').textContent=S.streak;
@@ -830,6 +1134,10 @@ function renderToday(){
     return;
   }
   const idx=queue[0];const card=ALL[idx];const cat=card[3];
+  const rev=S.reversed;
+  const front=rev?card[1]:buildWords(card[0]);
+  const back=rev?buildWords(card[0]):card[1];
+  const hint=rev?'Tap to reveal Spanish':'Tap to reveal translation';
   area.innerHTML=`<div class="flashcard" id="fc" onclick="flip()">
     ${cardImgTag(idx)}
     <div class="card-overlay" id="fc-overlay" style="display:none"></div>
@@ -837,10 +1145,10 @@ function renderToday(){
     <div class="card-content">
       <span class="card-cat-badge cc-${cat}">${CAT[cat]||cat}</span>
       <div class="card-body">
-        <div class="card-es">${card[0]}</div>
+        <div class="card-es">${front}</div>
         <span class="card-kw">${card[2]}</span>
-        <div class="card-en" id="fc-en">${card[1]}</div>
-        <div class="card-hint" id="fc-hint">Tap to reveal translation</div>
+        <div class="card-en" id="fc-en">${back}</div>
+        <div class="card-hint" id="fc-hint">${hint}</div>
         <div class="card-actions" id="fc-act">
           <button class="btn-again" onclick="event.stopPropagation();markAgain(${idx})">Again</button>
           <button class="btn-knew" onclick="event.stopPropagation();markKnew(${idx})">Got it ✓</button>
@@ -872,9 +1180,8 @@ function flip(){
 function anim(cls,cb){const c=document.getElementById('fc');if(!c){cb();return}c.classList.add(cls);setTimeout(cb,260)}
 
 function markKnew(idx){anim('swipe-r',()=>{S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayQueue=S.todayQueue.filter(i=>i!==idx);if(!S.todayDone.includes(idx))S.todayDone.push(idx);if(!S.knownIds.includes(idx))S.knownIds.push(idx);save();renderToday()})}
-function markAgain(idx){anim('swipe-l',()=>{S.todayQueue=S.todayQueue.filter(i=>i!==idx);S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayAgain.push(idx);save();renderToday()})}
-function addMore(){const used=new Set([...S.todayDone,...S.todayQueue,...S.todayAgain]);S.todayQueue=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);save();renderToday()}
-function speak(t){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=0.85;window.speechSynthesis.speak(u)}
+function markAgain(idx){anim('swipe-l',()=>{S.todayQueue=S.todayQueue.filter(i=>i!==idx);S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayQueue.push(idx);save();renderToday()})}
+function addMore(){const used=new Set([...S.todayDone,...S.todayQueue,...S.todayAgain]);S.todayQueue=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);save();renderToday()}function speak(t){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=0.85;window.speechSynthesis.speak(u)}
 function esc(s){return s.replace(/'/g,"\\'")}
 
 // ── BROWSE ──
