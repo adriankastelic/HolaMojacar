@@ -800,13 +800,15 @@ function greeting(){
 // Upload them to your GitHub repo in an /img/ folder
 // Cards without an image show the deep blue background
 function cardNum(idx){return String(idx+1).padStart(3,'0')}
-function imgSrc(idx){return`img/card-${cardNum(idx)}.jpg`}
+function imgSrc(idx,ext){return`img/card-${cardNum(idx)}.${ext||'jpg'}`}
 
 function cardImgTag(idx){
-  return`<img class="card-img" src="${imgSrc(idx)}" alt="" onerror="this.style.display='none'" loading="eager">`;
+  const jpg=imgSrc(idx,'jpg');const png=imgSrc(idx,'png');
+  return`<img class="card-img" src="${jpg}" alt="" onerror="if(this.src.endsWith('.jpg')){this.src='${png}'}else{this.style.display='none'}" loading="eager">`;
 }
 function browseImgTag(idx){
-  return`<img class="bc-img" src="${imgSrc(idx)}" alt="" onerror="this.style.display='none'" loading="lazy">`;
+  const jpg=imgSrc(idx,'jpg');const png=imgSrc(idx,'png');
+  return`<img class="bc-img" src="${jpg}" alt="" onerror="if(this.src.endsWith('.jpg')){this.src='${png}'}else{this.style.display='none'}" loading="lazy">`;
 }
 
 // ── TODAY RENDER ──
