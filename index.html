@@ -9,6 +9,11 @@ v4 — Black speaker button, Again shuffles to back of queue, clickable Spanish 
 v5 — Removed yellow watercolour images instruction box from settings
 v6 — Added Progress tab to nav bar: streak card, stats summary (words learned, total reviewed, avg per day), bar chart of cards reviewed with daily/monthly toggle
 v7 — App renamed to Hola Mojácar, app icon added (icon.png), apple-touch-icon configured for home screen
+v8 — App banner added above nav bar with icon, title and subheading. Full colour scheme updated to match logo palette (royal blue #1565C0, orange #F47820, bougainvillea pink #E91E8C). Nav top padding removed.
+v9 — Banner redesigned: landscape Mojácar image fills left 50%, app name and subheading on right 50% over blue gradient background
+v10 — Banner redesigned again: full-width cropped Mojácar landscape image with title and subheading overlaid on dark blue top gradient
+v11 — Replaced image banner with compact text header; fixed scrolling so card buttons are always reachable; compacted all spacing
+v12 — Progress chart: daily view now shows last 7 days, weekly view shows last 4 calendar weeks; fixed label overlap with proper DPR-aware canvas and rotated weekly labels
 ============================
 -->
 <html lang="en">
@@ -26,68 +31,75 @@ v7 — App renamed to Hola Mojácar, app icon added (icon.png), apple-touch-icon
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cobalt:    #1B4E78;
-  --cobalt2:   #2A7FB5;
-  --cobalt3:   #5AAAC8;
-  --cobalt-lt: #A8CDE0;
-  --white:     #F8F5F0;
-  --white2:    #EDE8DF;
-  --terra:     #C4622D;
-  --terra2:    #E8A020;
-  --sand:      #D4A45A;
-  --sand-lt:   #F0E8D0;
-  --sand-dk:   #9A6428;
-  --bougain:   #D4276A;
-  --bougain2:  #E8507A;
-  --lavender:  #8899BB;
-  --text:      #1A2A3A;
-  --text-md:   #4A5A6A;
-  --text-lt:   #8A9AAA;
+  --cobalt:    #1565C0;
+  --cobalt2:   #1976D2;
+  --cobalt3:   #42A5F5;
+  --cobalt-lt: #BBDEFB;
+  --white:     #FFFFFF;
+  --white2:    #F0F4FF;
+  --terra:     #E65100;
+  --terra2:    #F47820;
+  --sand:      #FFB74D;
+  --sand-lt:   #FFF3E0;
+  --sand-dk:   #BF360C;
+  --bougain:   #E91E8C;
+  --bougain2:  #F06292;
+  --lavender:  #7986CB;
+  --text:      #0D1B3E;
+  --text-md:   #37474F;
+  --text-lt:   #78909C;
   --radius:    18px;
   --radius-sm: 12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:#000000;color:var(--text)}
 
+
+/* ── APP HEADER ── */
+.app-header{width:100%;flex-shrink:0;padding:10px 16px 8px;background:var(--cobalt);text-align:center;border-bottom:2px solid rgba(244,120,32,0.4)}
+.app-header-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#fff;line-height:1.1;margin:0}
+.app-header-title span{color:#F47820}
+.app-header-sub{font-family:'Poppins',sans-serif;font-size:10px;font-weight:400;color:rgba(255,255,255,0.7);margin:1px 0 0;letter-spacing:0.04em}
+
 /* ── NAV ── */
-.nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:48px 0 0;border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
+.nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:0;border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
 .nav-tab{flex:1;padding:10px 4px 13px;text-align:center;font-size:10px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:none;letter-spacing:0.06em;text-transform:uppercase;position:relative;transition:color 0.2s}
 .nav-tab.active{color:#fff}
 .nav-tab.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2.5px;background:var(--terra2);border-radius:2px}
 .nav-icon{font-size:19px;display:block;margin-bottom:2px}
 
 /* ── SCREENS ── */
-.screen{display:none;flex-direction:column;height:calc(100vh - 86px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
+.screen{display:none;flex-direction:column;height:calc(100vh - 136px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
 .screen.active{display:flex}
 
 /* ── TODAY HEADER ── */
-.today-header{background:var(--topbar-color,#5AAAC8);padding:18px 20px 24px;color:#fff;position:relative;overflow:hidden;transition:background 1s ease}
+.today-header{background:var(--topbar-color,#1565C0);padding:12px 16px 14px;color:#fff;position:relative;overflow:hidden;transition:background 1s ease}
 .today-header::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.04)}
 .today-header::after{content:'';position:absolute;right:20px;bottom:-40px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.03)}
 .today-header h1{font-family:'Poppins',sans-serif;font-size:22px;font-weight:600;margin-bottom:3px;position:relative}
 .today-header .sub{font-size:12px;color:rgba(255,255,255,0.55);position:relative}
-.streak-row{display:flex;align-items:center;gap:10px;margin-top:14px;background:rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;position:relative;border:1px solid rgba(255,255,255,0.1)}
+.streak-row{display:flex;align-items:center;gap:10px;margin-top:8px;background:rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;position:relative;border:1px solid rgba(255,255,255,0.1)}
 .streak-num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:600;color:var(--terra2);line-height:1}
 .streak-info{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5}
 .streak-info strong{display:block;font-size:13px;color:#fff}
 
 /* ── PROGRESS ── */
 .prog-wrap{padding:14px 20px 6px;background:#000000}
-.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
 .prog-top span{font-size:12px;color:rgba(255,255,255,0.5)}
 .prog-top strong{font-size:14px;color:#fff;font-weight:500}
 .prog-bar{height:7px;background:rgba(255,255,255,0.12);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;background:var(--terra2);border-radius:99px;transition:width 0.5s ease}
+.prog-fill{height:100%;background:#F47820;border-radius:99px;transition:width 0.5s ease}
 
 /* ── DAILY COUNT ── */
-.daily-row{display:flex;align-items:center;padding:10px 20px 14px;background:#000000;border-bottom:1px solid rgba(255,255,255,0.08)}
+.daily-row{display:flex;align-items:center;padding:7px 16px;background:#000000;border-bottom:1px solid rgba(255,255,255,0.08)}
 .daily-row label{font-size:13px;color:rgba(255,255,255,0.6);flex:1}
 .cnt-ctrl{display:flex;align-items:center;gap:10px}
 .cnt-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.4);background:none;font-size:16px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;line-height:1}
 .cnt-val{font-size:15px;font-weight:500;min-width:26px;text-align:center;color:#fff}
 
 /* ── CARD AREA ── */
-.card-area{flex:1;padding:14px 16px 16px;display:flex;flex-direction:column}
+.card-area{flex:1;padding:10px 14px 12px;display:flex;flex-direction:column}
 
 /* ── FLASHCARD ── */
 .flashcard{border-radius:var(--radius);overflow:hidden;flex:1;display:flex;flex-direction:column;position:relative;min-height:280px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,0.35);user-select:none;transition:transform 0.12s;background:#fff}
@@ -113,7 +125,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .card-actions{display:none;gap:10px;padding-top:12px}
 .card-actions.show{display:flex}
 .btn-again{flex:1;background:#fff;color:var(--terra);border:1.5px solid var(--terra);border-radius:var(--radius-sm);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
-.btn-knew{flex:1;background:var(--cobalt);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.btn-knew{flex:1;background:#F47820;color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
 
 /* ── DONE STATE ── */
 .done-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:#000000}
@@ -138,17 +150,17 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .prog-header .sub{font-size:12px;color:rgba(255,255,255,0.55)}
 .prog-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .prog-stat-box{background:#fff;border-radius:var(--radius-sm);padding:16px;text-align:center}
-.prog-stat-num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:600;color:var(--cobalt)}
+.prog-stat-num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:600;color:#1565C0}
 .prog-stat-lbl{font-size:11px;color:var(--text-lt);margin-top:2px}
 .chart-card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
 .chart-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .chart-toggle{display:flex;gap:0;border:1.5px solid var(--cobalt);border-radius:8px;overflow:hidden}
 .chart-toggle button{padding:4px 12px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;border:none;background:none;color:var(--cobalt);cursor:pointer;transition:all 0.15s}
-.chart-toggle button.active{background:var(--cobalt);color:#fff}
-.chart-wrap{position:relative;height:180px;width:100%}
+.chart-toggle button.active{background:#1565C0;color:#fff}
+.chart-wrap{position:relative;height:200px;width:100%}
 .chart-wrap canvas{width:100%!important;height:100%!important}
 .chart-empty{text-align:center;padding:40px 0;font-size:13px;color:var(--text-lt)}
-.streak-card{background:var(--cobalt);border-radius:var(--radius);padding:18px;display:flex;align-items:center;gap:14px}
+.streak-card{background:linear-gradient(135deg,#1565C0,#1A3A8F);border-radius:var(--radius);padding:18px;display:flex;align-items:center;gap:14px}
 .streak-card-num{font-family:'Poppins',sans-serif;font-size:48px;font-weight:600;color:var(--terra2);line-height:1}
 .streak-card-info{color:#fff}
 .streak-card-info strong{display:block;font-size:15px;font-weight:600}
@@ -164,7 +176,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .cat-pills{display:flex;gap:7px;overflow-x:auto;padding:8px 16px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .cat-pills::-webkit-scrollbar{display:none}
 .cat-pill{white-space:nowrap;padding:5px 13px;border-radius:20px;border:1.5px solid var(--white2);font-size:12px;cursor:pointer;background:var(--white);color:var(--text-md);font-family:'DM Sans',sans-serif;flex-shrink:0;transition:all 0.15s}
-.cat-pill.active{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+.cat-pill.active{background:#1565C0;color:#fff;border-color:#1565C0}
 .browse-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
 .browse-count{padding:8px 16px;font-size:12px;color:rgba(255,255,255,0.5);background:#000000}
 .browse-list{padding:8px 16px 20px;display:flex;flex-direction:column;gap:10px}
@@ -225,6 +237,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 </head>
 <body>
 
+<div class="app-header">
+  <p class="app-header-title">¡Hola <span>Mojácar</span>!</p>
+  <p class="app-header-sub">Learn your first 1,000 Spanish Phrases</p>
+</div>
 <nav class="nav">
   <button class="nav-tab active" onclick="showScreen('today')" id="tab-today">
     <span class="nav-icon">☀️</span>Hoy
@@ -299,8 +315,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
       <h3>
         Cards reviewed
         <div class="chart-toggle">
-          <button id="chart-daily-btn" class="active" onclick="setChartMode('daily')">Daily</button>
-          <button id="chart-monthly-btn" onclick="setChartMode('monthly')">Monthly</button>
+          <button id="chart-daily-btn" class="active" onclick="setChartMode('daily')">Last 7 days</button>
+          <button id="chart-monthly-btn" onclick="setChartMode('monthly')">Last 4 weeks</button>
         </div>
       </h3>
       <div class="chart-wrap"><canvas id="prog-chart"></canvas></div>
@@ -1303,7 +1319,6 @@ function confirmReset(){if(confirm('Reset all progress?')){S.knownIds=[];S.strea
 
 // ── PROGRESS SCREEN ──
 let chartMode='daily';
-let chartInstance=null;
 
 function setChartMode(mode){
   chartMode=mode;
@@ -1336,35 +1351,41 @@ function drawChart(){
   if(!ctx)return;
   if(!S.history)S.history={};
 
-  // Destroy previous chart if exists
-  if(chartInstance){chartInstance.destroy();chartInstance=null;}
-
   let labels=[], data=[];
 
   if(chartMode==='daily'){
-    // Last 30 days
-    for(let i=29;i>=0;i--){
+    // Last 7 days
+    for(let i=6;i>=0;i--){
       const d=new Date();d.setDate(d.getDate()-i);
       const key=d.toISOString().slice(0,10);
-      labels.push(i===0?'Today':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
+      const day=d.getDate();
+      const mon=d.toLocaleDateString('en-GB',{month:'short'});
+      labels.push(i===0?'Today':day+' '+mon);
       data.push(S.history[key]||0);
     }
   } else {
-    // Last 12 months
-    for(let i=11;i>=0;i--){
-      const d=new Date();d.setMonth(d.getMonth()-i);
-      const yr=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,'0');
-      const monthKey=yr+'-'+mo;
-      const total=Object.entries(S.history).filter(([k])=>k.startsWith(monthKey)).reduce((a,[,v])=>a+v,0);
-      labels.push(d.toLocaleDateString('en-GB',{month:'short',year:'2-digit'}));
+    // Last 4 weeks (Mon-Sun buckets)
+    const today=new Date();
+    const dow=today.getDay()||7;
+    const monday=new Date(today);monday.setDate(today.getDate()-(dow-1));monday.setHours(0,0,0,0);
+    for(let w=3;w>=0;w--){
+      const wStart=new Date(monday);wStart.setDate(monday.getDate()-w*7);
+      const wEnd=new Date(wStart);wEnd.setDate(wStart.getDate()+6);
+      let total=0;
+      for(let d=new Date(wStart);d<=wEnd&&d<=today;d.setDate(d.getDate()+1)){
+        total+=S.history[d.toISOString().slice(0,10)]||0;
+      }
+      const sD=wStart.getDate(),sM=wStart.toLocaleDateString('en-GB',{month:'short'});
+      const eD=wEnd.getDate(),eM=wEnd.toLocaleDateString('en-GB',{month:'short'});
+      labels.push(w===0?'This week':(sM===eM?sD+'–'+eD+' '+sM:sD+' '+sM+'–'+eD+' '+eM));
       data.push(total);
     }
   }
 
+  const wrap=ctx.parentElement;
   const hasData=data.some(v=>v>0);
   if(!hasData){
     ctx.style.display='none';
-    const wrap=ctx.parentElement;
     if(!wrap.querySelector('.chart-empty')){
       const empty=document.createElement('div');
       empty.className='chart-empty';
@@ -1374,61 +1395,70 @@ function drawChart(){
     return;
   }
   ctx.style.display='block';
-  const existing=ctx.parentElement.querySelector('.chart-empty');
+  const existing=wrap.querySelector('.chart-empty');
   if(existing)existing.remove();
 
-  // Draw chart using canvas directly (no library needed)
-  const W=ctx.offsetWidth||ctx.parentElement.offsetWidth||320;
+  const dpr=window.devicePixelRatio||1;
+  const W=wrap.offsetWidth||320;
   const H=180;
-  ctx.width=W;ctx.height=H;
+  ctx.style.width=W+'px';ctx.style.height=H+'px';
+  ctx.width=W*dpr;ctx.height=H*dpr;
   const c=ctx.getContext('2d');
-  const pad={t:10,r:10,b:30,l:36};
+  c.scale(dpr,dpr);
+
+  const pad={t:12,r:10,b:38,l:32};
   const cw=W-pad.l-pad.r;
   const ch=H-pad.t-pad.b;
   const max=Math.max(...data,1);
-  const cobalt='#1B4E78';
-  const terra='#E8A020';
+  const cobalt='#1565C0';
+  const terra='#F47820';
 
   c.clearRect(0,0,W,H);
 
-  // Grid lines
-  c.strokeStyle='#f0ebe0';c.lineWidth=1;
+  // Y grid + labels
   for(let i=0;i<=4;i++){
     const y=pad.t+ch-(ch*i/4);
+    c.strokeStyle='rgba(0,0,0,0.07)';c.lineWidth=1;
     c.beginPath();c.moveTo(pad.l,y);c.lineTo(pad.l+cw,y);c.stroke();
-    c.fillStyle='#aaa';c.font='9px Poppins,sans-serif';c.textAlign='right';
-    c.fillText(Math.round(max*i/4),pad.l-4,y+3);
+    c.fillStyle='#999';c.font='9px DM Sans,sans-serif';c.textAlign='right';c.textBaseline='middle';
+    c.fillText(Math.round(max*i/4),pad.l-4,y);
   }
 
   const n=labels.length;
-  const barW=Math.max(4,cw/n*0.6);
   const gap=cw/n;
+  const barW=Math.max(8,gap*0.6);
 
   // Bars
   data.forEach((v,i)=>{
     const x=pad.l+i*gap+gap/2-barW/2;
-    const bh=ch*(v/max);
+    const bh=v>0?Math.max(4,ch*(v/max)):0;
     const y=pad.t+ch-bh;
-    // Highlight today/this month
-    c.fillStyle=(i===n-1)?terra:cobalt+'99';
-    c.beginPath();
-    const r=3;
-    c.moveTo(x+r,y);c.lineTo(x+barW-r,y);c.quadraticCurveTo(x+barW,y,x+barW,y+r);
-    c.lineTo(x+barW,y+bh);c.lineTo(x,y+bh);c.lineTo(x,y+r);
-    c.quadraticCurveTo(x,y,x+r,y);c.fill();
-    // Value label on bar if >0
-    if(v>0&&bh>14){
-      c.fillStyle='#fff';c.font='bold 9px Poppins,sans-serif';c.textAlign='center';
-      c.fillText(v,x+barW/2,y+10);
+    c.fillStyle=(i===n-1)?terra:cobalt+'BB';
+    if(bh>0){
+      const r=Math.min(3,barW/2);
+      c.beginPath();
+      c.moveTo(x+r,y);c.lineTo(x+barW-r,y);
+      c.quadraticCurveTo(x+barW,y,x+barW,y+r);
+      c.lineTo(x+barW,y+bh);c.lineTo(x,y+bh);c.lineTo(x,y+r);
+      c.quadraticCurveTo(x,y,x+r,y);c.fill();
+      if(v>0&&bh>16){
+        c.fillStyle='#fff';c.font='bold 9px DM Sans,sans-serif';c.textAlign='center';c.textBaseline='top';
+        c.fillText(v,x+barW/2,y+4);
+      }
     }
   });
 
-  // X axis labels — show every nth to avoid crowding
-  const step=chartMode==='daily'?Math.ceil(n/8):1;
-  c.fillStyle='#888';c.font='9px Poppins,sans-serif';c.textAlign='center';
+  // X axis labels
+  c.fillStyle='#555';c.textBaseline='top';
   labels.forEach((l,i)=>{
-    if(i%step===0||i===n-1){
-      c.fillText(l,pad.l+i*gap+gap/2,H-8);
+    const cx=pad.l+i*gap+gap/2;
+    const ly=pad.t+ch+7;
+    if(chartMode==='monthly'&&l.length>9){
+      // Rotate weekly labels slightly
+      c.save();c.translate(cx,ly+2);c.rotate(-0.45);
+      c.font='9px DM Sans,sans-serif';c.textAlign='right';c.fillText(l,0,0);c.restore();
+    } else {
+      c.font='9px DM Sans,sans-serif';c.textAlign='center';c.fillText(l,cx,ly);
     }
   });
 }
@@ -1448,7 +1478,7 @@ function showScreen(n){
 // Evening/night (7pm–6am): Deep Ocean #042C53
 function updateTopbarColor(){
   const h=new Date().getHours();
-  const color=(h>=6&&h<19)?'#5AAAC8':'#042C53';
+  const color=(h>=6&&h<19)?'#1565C0':'#0D2B6E';
   document.documentElement.style.setProperty('--topbar-color',color);
 }
 updateTopbarColor();
