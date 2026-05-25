@@ -22,7 +22,7 @@ v14 — Typing mode: optional setting to type English before revealing; fuzzy of
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hola Mojácar">
@@ -59,7 +59,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 
 /* ── APP HEADER ── */
-.app-header{width:100%;flex-shrink:0;padding:10px 16px 8px;background:var(--cobalt);text-align:center;border-bottom:2px solid rgba(244,120,32,0.4)}
+.app-header{width:100%;flex-shrink:0;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 8px;background:var(--cobalt);text-align:center;border-bottom:2px solid rgba(244,120,32,0.4)}
 .app-header-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#fff;line-height:1.1;margin:0}
 .app-header-title span{color:#F47820}
 .app-header-sub{font-family:'Poppins',sans-serif;font-size:10px;font-weight:400;color:rgba(255,255,255,0.7);margin:1px 0 0;letter-spacing:0.04em}
@@ -92,14 +92,14 @@ body.night-mode .type-input::placeholder{color:rgba(255,255,255,0.35)}
 body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
 
 /* ── NAV ── */
-.nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:0;border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
+.nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:0 0 env(safe-area-inset-bottom,0px);border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
 .nav-tab{flex:1;padding:8px 2px 11px;text-align:center;font-size:9px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:none;letter-spacing:0.06em;text-transform:uppercase;position:relative;transition:color 0.2s}
 .nav-tab.active{color:#fff}
 .nav-tab.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2.5px;background:var(--terra2);border-radius:2px}
 .nav-icon{font-size:17px;display:block;margin-bottom:1px}
 
 /* ── SCREENS ── */
-.screen{display:none;flex-direction:column;height:calc(100vh - 136px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
+.screen{display:none;flex-direction:column;height:calc(100vh - 136px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000000}
 .screen.active{display:flex}
 
 /* ── TODAY HEADER ── */
@@ -129,7 +129,7 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
 .cnt-val{font-size:15px;font-weight:500;min-width:26px;text-align:center;color:#fff}
 
 /* ── CARD AREA ── */
-.card-area{flex:1;padding:10px 14px 12px;display:flex;flex-direction:column}
+.card-area{flex:1;padding:10px 14px 12px;display:flex;flex-direction:column;padding-bottom:max(12px,env(safe-area-inset-bottom,12px))}
 
 /* ── FLASHCARD ── */
 .flashcard{border-radius:var(--radius);overflow:hidden;flex:1;display:flex;flex-direction:column;position:relative;min-height:280px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,0.35);user-select:none;transition:transform 0.12s;background:#fff}
