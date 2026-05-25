@@ -80,6 +80,17 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .help-tip{background:linear-gradient(135deg,#FFF8E1,#FFF3CD);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:#555;line-height:1.6;border:1px solid #FFE082}
 .help-tip strong{color:#E65100}
 
+/* ── NIGHT MODE ── */
+body.night-mode .app-header{background:#000;border-bottom-color:rgba(244,120,32,0.3)}
+body.night-mode .flashcard{background:#0D1B2A;color:#fff}
+body.night-mode .card-es{color:#fff}
+body.night-mode .card-en{color:#e8e8e8}
+body.night-mode .card-cat{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
+body.night-mode .card-hint{color:rgba(255,255,255,0.45)}
+body.night-mode .type-input{background:#0D1B2A;border-color:#2a4a6a;color:#fff}
+body.night-mode .type-input::placeholder{color:rgba(255,255,255,0.35)}
+body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
+
 /* ── NAV ── */
 .nav{display:flex;background:var(--topbar-color,#5AAAC8);padding:0;border-bottom:2px solid rgba(255,255,255,0.1);transition:background 1s ease}
 .nav-tab{flex:1;padding:8px 2px 11px;text-align:center;font-size:9px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:none;letter-spacing:0.06em;text-transform:uppercase;position:relative;transition:color 0.2s}
@@ -243,6 +254,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 /* ── SETTINGS ── */
 .settings-wrap{padding:18px 16px 30px;display:flex;flex-direction:column;gap:14px;background:#000000}
 .s-card{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
+.s-divider{height:1px;background:rgba(0,0,0,0.07);margin:10px 0}
 .s-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);margin-bottom:14px;font-weight:600}
 .s-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--white2)}
 .s-row:last-child{border:none}
@@ -363,17 +375,6 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <div class="screen" id="screen-settings">
   <div class="settings-wrap">
     <div class="s-card">
-      <h3>Practice</h3>
-      <div class="s-row">
-        <div><div class="s-label">Typing mode</div><div class="s-sub">Type the English before revealing</div></div>
-        <label class="toggle-wrap">
-          <input type="checkbox" id="toggle-typing" onchange="saveSettings()">
-          <span class="toggle-track" id="typ-track"></span>
-          <span class="toggle-thumb" id="typ-thumb"></span>
-        </label>
-      </div>
-    </div>
-    <div class="s-card">
       <h3>Daily goal</h3>
       <div class="s-row">
         <div><div class="s-label">Cards per session</div><div class="s-sub">Tap − / + to adjust</div></div>
@@ -383,21 +384,15 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
           <button class="cnt-btn-lg" onclick="adjDaily(5)">+</button>
         </div>
       </div>
-    </div>
-
-    <div class="s-card">
-      <h3>Audio</h3>
+      <div class="s-divider"></div>
       <div class="s-row">
-        <div><div class="s-label">Auto-play on card load</div><div class="s-sub">Speaks Spanish when card appears</div></div>
+        <div><div class="s-label">Typing mode</div><div class="s-sub">Type the translation before revealing</div></div>
         <label class="toggle-wrap">
-          <input type="checkbox" id="auto-toggle" onchange="saveSettings()">
-          <span class="toggle-track" id="tog-track"></span>
-          <span class="toggle-thumb" id="tog-thumb"></span>
+          <input type="checkbox" id="toggle-typing" onchange="saveSettings()">
+          <span class="toggle-track" id="typ-track"></span>
+          <span class="toggle-thumb" id="typ-thumb"></span>
         </label>
       </div>
-    </div>
-    <div class="s-card">
-      <h3>Card mode</h3>
       <div class="s-row">
         <div><div class="s-label">English → Spanish</div><div class="s-sub">Show English first, reveal Spanish</div></div>
         <label class="toggle-wrap">
@@ -406,11 +401,22 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
           <span class="toggle-thumb" id="rev-thumb"></span>
         </label>
       </div>
-    </div>
-
-    <div class="s-card">
-      <h3>Stats</h3>
-      <div class="stat-grid" id="stat-grid"></div>
+      <div class="s-row">
+        <div><div class="s-label">Audio auto-play</div><div class="s-sub">Speaks Spanish when card appears</div></div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="auto-toggle" onchange="saveSettings()">
+          <span class="toggle-track" id="tog-track"></span>
+          <span class="toggle-thumb" id="tog-thumb"></span>
+        </label>
+      </div>
+      <div class="s-row">
+        <div><div class="s-label">Image hints</div><div class="s-sub">Show scene illustrations on cards</div></div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="toggle-images" onchange="saveSettings()">
+          <span class="toggle-track" id="img-track"></span>
+          <span class="toggle-thumb" id="img-thumb"></span>
+        </label>
+      </div>
     </div>
 
     <div class="install-box">
@@ -990,7 +996,7 @@ const ALL=[
 ["¿Cuándo se usa ser y cuándo estar?","When do you use ser and when estar?","cuándo","general"],
 ];
 // ── STATE ──
-let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,reversed:false,browseCat:'all',history:{},imgVariants:{},recalls:{},typingMode:false};
+let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,reversed:false,browseCat:'all',history:{},imgVariants:{},recalls:{},typingMode:false,imageHints:true};
 
 function load(){const d=localStorage.getItem('alm3');if(d){try{Object.assign(S,JSON.parse(d))}catch(e){}}}
 function save(){localStorage.setItem('alm3',JSON.stringify(S))}
@@ -998,6 +1004,7 @@ function saveSettings(){
   S.autoplay=document.getElementById('auto-toggle').checked;
   S.reversed=document.getElementById('rev-toggle').checked;
   S.typingMode=document.getElementById('toggle-typing').checked;
+  S.imageHints=document.getElementById('toggle-images').checked;
   save();updateToggle();
 }
 function updateToggle(){
@@ -1015,6 +1022,12 @@ function updateToggle(){
   const tyThumb=document.getElementById('typ-thumb');
   if(tyTrack)tyTrack.style.background=tm?'#2A7FB5':'#ccc';
   if(tyThumb)tyThumb.style.left=tm?'21px':'3px';
+  const ih=S.imageHints!==false;
+  document.getElementById('toggle-images').checked=ih;
+  const imgTrack=document.getElementById('img-track');
+  const imgThumb=document.getElementById('img-thumb');
+  if(imgTrack)imgTrack.style.background=ih?'#2A7FB5':'#ccc';
+  if(imgThumb)imgThumb.style.left=ih?'21px':'3px';
 }
 function todayStr(){return new Date().toISOString().slice(0,10)}
 
@@ -1079,6 +1092,7 @@ function imgSrcs(idx,variant){
 
 // onerror chain: try next variant suffix, then fallback to default, then hide
 function cardImgTag(idx){
+  if(S.imageHints===false)return'';
   const v=S.imgVariants?IMG_VARIANTS[S.imgVariants[idx]||0]:'';
   const n=cardNum(idx);
   // Build src with current variant; onerror tries .png then default .jpg then default .png then hides
@@ -1787,8 +1801,10 @@ function showScreen(n){
 // Evening/night (7pm–6am): Deep Ocean #042C53
 function updateTopbarColor(){
   const h=new Date().getHours();
-  const color=(h>=6&&h<19)?'#1565C0':'#0D2B6E';
+  const isNight=h>=21||h<6;
+  const color=isNight?'#0D2B6E':h>=18?'#1A3A8F':'#1565C0';
   document.documentElement.style.setProperty('--topbar-color',color);
+  document.body.classList.toggle('night-mode',isNight);
 }
 updateTopbarColor();
 setInterval(updateTopbarColor,60000);
