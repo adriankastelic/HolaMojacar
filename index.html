@@ -196,6 +196,12 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
 .prog-stat-box{background:#fff;border-radius:var(--radius-sm);padding:16px;text-align:center}
 .prog-stat-num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:600;color:#1565C0}
 .prog-stat-lbl{font-size:11px;color:var(--text-lt);margin-top:2px}
+.pie-card{background:#fff;border-radius:var(--radius);padding:16px 18px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
+.pie-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);margin-bottom:12px;font-weight:600}
+.pie-wrap{display:flex;align-items:center;gap:16px}
+.pie-legend{display:flex;flex-direction:column;gap:8px}
+.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#555;font-family:'DM Sans',sans-serif}
+.pie-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 .chart-card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
 .chart-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .chart-toggle{display:flex;gap:0;border:1.5px solid var(--cobalt);border-radius:8px;overflow:hidden}
@@ -225,9 +231,9 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
 .browse-count{padding:8px 16px;font-size:12px;color:rgba(255,255,255,0.5);background:#000000}
 .browse-list{padding:8px 16px 20px;display:flex;flex-direction:column;gap:10px}
 .bc{background:var(--white);border-radius:var(--radius-sm);overflow:hidden;box-shadow:0 2px 8px rgba(27,78,120,0.07)}
-.bc-img-wrap{height:130px;position:relative;overflow:hidden;background:#000000}
-.bc-img{width:100%;height:100%;object-fit:cover}
-.bc-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--cobalt) 0%,var(--cobalt3) 60%,var(--sand) 100%)}
+.bc-img-wrap{position:relative;background:#000;line-height:0}
+.bc-img{width:100%;height:auto;display:block;aspect-ratio:780/440;object-fit:contain}
+.bc-img-ph{width:100%;aspect-ratio:780/440;background:linear-gradient(135deg,var(--cobalt) 0%,var(--cobalt3) 60%,var(--sand) 100%)}
 .bc-body{padding:12px 14px 10px}
 .bc-num{font-size:10px;color:var(--cobalt3);font-weight:600;margin-bottom:3px;letter-spacing:0.05em;text-transform:uppercase}
 .bc-es{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--cobalt);margin-bottom:3px;line-height:1.3}
@@ -255,6 +261,7 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
 .settings-wrap{padding:18px 16px 30px;display:flex;flex-direction:column;gap:14px;background:#000000}
 .s-card{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:0 2px 10px rgba(27,78,120,0.07)}
 .s-divider{height:1px;background:rgba(0,0,0,0.07);margin:10px 0}
+.lang-select{border:1.5px solid #ddd;border-radius:8px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:#333;background:#fff;outline:none;cursor:pointer;max-width:160px}
 .s-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--cobalt);margin-bottom:14px;font-weight:600}
 .s-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--white2)}
 .s-row:last-child{border:none}
@@ -359,6 +366,13 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
       </div>
     </div>
     <div class="prog-stat-grid" id="prog-stat-grid"></div>
+    <div class="pie-card">
+      <h3>Mastery balance</h3>
+      <div class="pie-wrap">
+        <canvas id="mastery-pie" width="180" height="180"></canvas>
+        <div class="pie-legend" id="pie-legend"></div>
+      </div>
+    </div>
     <div class="chart-card">
       <h3>
         Cards reviewed
@@ -394,12 +408,12 @@ body.night-mode .word-chip{background:rgba(255,255,255,0.08);color:#cde}
         </label>
       </div>
       <div class="s-row">
-        <div><div class="s-label">English → Spanish</div><div class="s-sub">Show English first, reveal Spanish</div></div>
-        <label class="toggle-wrap">
-          <input type="checkbox" id="rev-toggle" onchange="saveSettings()">
-          <span class="toggle-track" id="rev-track"></span>
-          <span class="toggle-thumb" id="rev-thumb"></span>
-        </label>
+        <div><div class="s-label">Language direction</div><div class="s-sub">Which direction to practice</div></div>
+        <select class="lang-select" id="lang-select" onchange="saveSettings()">
+          <option value="both">Both directions</option>
+          <option value="toEnglish">Translate to English</option>
+          <option value="toSpanish">Translate to Spanish</option>
+        </select>
       </div>
       <div class="s-row">
         <div><div class="s-label">Audio auto-play</div><div class="s-sub">Speaks Spanish when card appears</div></div>
@@ -996,13 +1010,13 @@ const ALL=[
 ["¿Cuándo se usa ser y cuándo estar?","When do you use ser and when estar?","cuándo","general"],
 ];
 // ── STATE ──
-let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,reversed:false,browseCat:'all',history:{},imgVariants:{},recalls:{},typingMode:false,imageHints:true};
+let S={dailyCount:20,todayDate:'',todayQueue:[],todayDone:[],todayAgain:[],knownIds:[],streak:0,lastDoneDate:'',autoplay:false,langMode:'both',browseCat:'all',history:{},imgVariants:{},recalls:{},typingMode:false,imageHints:true};
 
 function load(){const d=localStorage.getItem('alm3');if(d){try{Object.assign(S,JSON.parse(d))}catch(e){}}}
 function save(){localStorage.setItem('alm3',JSON.stringify(S))}
 function saveSettings(){
   S.autoplay=document.getElementById('auto-toggle').checked;
-  S.reversed=document.getElementById('rev-toggle').checked;
+  S.langMode=document.getElementById('lang-select').value;
   S.typingMode=document.getElementById('toggle-typing').checked;
   S.imageHints=document.getElementById('toggle-images').checked;
   save();updateToggle();
@@ -1012,10 +1026,9 @@ function updateToggle(){
   document.getElementById('auto-toggle').checked=on;
   document.getElementById('tog-track').style.background=on?'#2A7FB5':'#ccc';
   document.getElementById('tog-thumb').style.left=on?'21px':'3px';
-  const rv=S.reversed;
-  document.getElementById('rev-toggle').checked=rv;
-  document.getElementById('rev-track').style.background=rv?'#2A7FB5':'#ccc';
-  document.getElementById('rev-thumb').style.left=rv?'21px':'3px';
+  const lm=S.langMode||'both';
+  const lsel=document.getElementById('lang-select');
+  if(lsel)lsel.value=lm;
   const tm=S.typingMode||false;
   document.getElementById('toggle-typing').checked=tm;
   const tyTrack=document.getElementById('typ-track');
@@ -1031,6 +1044,10 @@ function updateToggle(){
 }
 function todayStr(){return new Date().toISOString().slice(0,10)}
 
+// Virtual card IDs: idx = ES->EN, idx+10000 = EN->ES
+function cardBaseIdx(vid){return vid>=10000?vid-10000:vid;}
+function cardIsReversed(vid){return vid>=10000;}
+
 function initToday(){
   const t=todayStr();
   if(S.todayDate!==t){
@@ -1038,10 +1055,18 @@ function initToday(){
       const diff=(new Date(t)-new Date(S.lastDoneDate))/(864e5);
       S.streak=diff<=1.5?S.streak+1:1;
     } else S.streak=1;
-    const seen=new Set(S.knownIds);
-    const unseen=ALL.map((_,i)=>i).filter(i=>!seen.has(i));
-    const seenArr=ALL.map((_,i)=>i).filter(i=>seen.has(i));
-    S.todayQueue=[...shuf(unseen),...shuf(seenArr)].slice(0,S.dailyCount);
+    const lm=S.langMode||'both';
+    function masteredVid(vid){
+      const base=cardBaseIdx(vid);
+      const key=cardIsReversed(vid)?base+'r':String(base);
+      return (S.recalls&&S.recalls[key]||0)>=10;
+    }
+    let pool=[];
+    if(lm==='both'||lm==='toEnglish') pool.push(...ALL.map((_,i)=>i));
+    if(lm==='both'||lm==='toSpanish') pool.push(...ALL.map((_,i)=>i+10000));
+    const unseen=pool.filter(v=>!masteredVid(v));
+    const mastered=pool.filter(v=>masteredVid(v));
+    S.todayQueue=[...shuf(unseen),...shuf(mastered)].slice(0,S.dailyCount);
     S.todayDone=[];S.todayAgain=[];S.todayDate=t;save();
   }
 }
@@ -1053,8 +1078,12 @@ function adjDaily(d){
   document.getElementById('daily-disp').textContent=S.dailyCount;
   const dlg=document.getElementById('daily-disp-lg');if(dlg)dlg.textContent=S.dailyCount;
   if(S.todayDate===todayStr()&&S.dailyCount>S.todayQueue.length+S.todayDone.length){
+    const lm2=S.langMode||'both';
+    let pool2=[];
+    if(lm2==='both'||lm2==='toEnglish') pool2.push(...ALL.map((_,i)=>i));
+    if(lm2==='both'||lm2==='toSpanish') pool2.push(...ALL.map((_,i)=>i+10000));
     const used=new Set([...S.todayQueue,...S.todayDone,...S.todayAgain]);
-    const extra=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i)));
+    const extra=shuf(pool2.filter(v=>!used.has(v)));
     const need=S.dailyCount-S.todayQueue.length-S.todayDone.length-S.todayAgain.length;
     S.todayQueue=[...S.todayQueue,...extra.slice(0,need)];
   }
@@ -1397,8 +1426,9 @@ function renderToday(){
   const now=new Date();
   document.getElementById('today-date').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   const queue=[...S.todayAgain,...S.todayQueue];
-  const total=S.todayDone.length+queue.length;
-  document.getElementById('prog-text').textContent=S.todayDone.length+' / '+total;
+  // Total is fixed at dailyCount so progress bar reflects goal, not re-queued cards
+  const total=Math.max(S.dailyCount,S.todayDone.length+queue.length);
+  document.getElementById('prog-text').textContent=S.todayDone.length+' / '+S.dailyCount;
   document.getElementById('prog-fill').style.width=(total>0?Math.round(S.todayDone.length/total*100):0)+'%';
   const area=document.getElementById('card-area');
   if(total===0){area.innerHTML=`<div class="done-state"><div class="done-icon">👋</div><h2>¡Empecemos!</h2><p>Ready for today's session?</p><button class="btn-primary" onclick="initToday();renderToday()">Start</button></div>`;return}
@@ -1407,9 +1437,9 @@ function renderToday(){
     area.innerHTML=`<div class="done-state"><div class="done-icon">🎉</div><h2>¡Muy bien!</h2><p>You've finished today's ${S.todayDone.length} cards.<br>Vuelve mañana — come back tomorrow!</p><button class="btn-primary" onclick="addMore()">Practice more</button></div>`;
     return;
   }
-  const idx=queue[0];const card=ALL[idx];const cat=card[3];
+  const vid=queue[0];const idx=cardBaseIdx(vid);const card=ALL[idx];const cat=card[3];
   nextVariant(idx); // rotate image variant each time card is shown
-  const rev=S.reversed;
+  const rev=cardIsReversed(vid)||(S.langMode==='toSpanish');
   const front=rev?card[1]:buildWords(card[0]);
   const back=rev?buildWords(card[0]):card[1];
   const hint=rev?'Tap to reveal Spanish':'Tap to reveal translation';
@@ -1420,18 +1450,18 @@ function renderToday(){
     <div class="card-content">
       <span class="card-cat-badge cc-${cat}">${CAT[cat]||cat}</span>
       <div class="card-body">
-        <div class="card-es">${front}${(()=>{const r=(S.recalls&&S.recalls[idx])||0;if(r>=10)return'<span class="recall-badge mastered">&#10003; Mastered</span>';if(r>0)return'<span class="recall-badge progress">'+r+'/10</span>';return'';})()}</div>
+        <div class="card-es">${front}${(()=>{const base=cardBaseIdx(vid);const rkey=cardIsReversed(vid)?base+'r':String(base);const r=(S.recalls&&S.recalls[rkey])||0;if(r>=10)return'<span class="recall-badge mastered">&#10003; Mastered</span>';if(r>0)return'<span class="recall-badge progress">'+r+'/10</span>';return'';})()}</div>
         <span class="card-kw">${card[2]}</span>
         <div class="card-en" id="fc-en">${back}</div>
         <div class="card-hint" id="fc-hint">${hint}</div>
         <div class="type-area" id="fc-type">
-          <input class="type-input" id="fc-type-input" type="text" placeholder="${rev?'Type the Spanish translation…':'Type the English meaning…'}" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){event.stopPropagation();checkAnswer(${idx},'${esc(rev?card[0]:card[1])}',${rev?'true':'false'})}">
-          <button class="type-check-btn" onclick="event.stopPropagation();checkAnswer(${idx},'${esc(rev?card[0]:card[1])}',${rev?'true':'false'})">Check ✓</button>
+          <input class="type-input" id="fc-type-input" type="text" placeholder="${rev?'Type the Spanish translation…':'Type the English meaning…'}" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){event.stopPropagation();checkAnswer(${vid},'${esc(rev?card[0]:card[1])}',${rev?'true':'false'})}">
+          <button class="type-check-btn" onclick="event.stopPropagation();checkAnswer(${vid},'${esc(rev?card[0]:card[1])}',${rev?'true':'false'})">Check ✓</button>
           <div class="type-result" id="fc-type-result"></div>
         </div>
         <div class="card-actions" id="fc-act">
-          <button class="btn-again" onclick="event.stopPropagation();markAgain(${idx})">Didn't get it</button>
-          <button class="btn-knew" onclick="event.stopPropagation();markKnew(${idx})">Got it ✓</button>
+          <button class="btn-again" onclick="event.stopPropagation();markAgain(${vid})">Didn't get it</button>
+          <button class="btn-knew" onclick="event.stopPropagation();markKnew(${vid})">Got it ✓</button>
         </div>
       </div>
     </div>
@@ -1578,15 +1608,21 @@ function flip(){
 
 function anim(cls,cb){const c=document.getElementById('fc');if(!c){cb();return}c.classList.add(cls);setTimeout(cb,260)}
 
-function markKnew(idx){anim('swipe-r',()=>{
-  S.todayAgain=S.todayAgain.filter(i=>i!==idx);
-  S.todayQueue=S.todayQueue.filter(i=>i!==idx);
-  if(!S.todayDone.includes(idx))S.todayDone.push(idx);
-  // Track recalls toward mastery
+function markKnew(vid){anim('swipe-r',()=>{
+  S.todayAgain=S.todayAgain.filter(i=>i!==vid);
+  S.todayQueue=S.todayQueue.filter(i=>i!==vid);
+  if(!S.todayDone.includes(vid))S.todayDone.push(vid);
+  // Track recalls per direction: base idx for ES->EN, idx+'r' for EN->ES
   if(!S.recalls)S.recalls={};
-  S.recalls[idx]=(S.recalls[idx]||0)+1;
-  // Mastered after 10 successful recalls
-  if(S.recalls[idx]>=10&&!S.knownIds.includes(idx))S.knownIds.push(idx);
+  const base=cardBaseIdx(vid);
+  const rkey=cardIsReversed(vid)?base+'r':String(base);
+  S.recalls[rkey]=(S.recalls[rkey]||0)+1;
+  // knownIds tracks fully mastered (both directions if in both mode)
+  const lm=S.langMode||'both';
+  const fwdDone=(S.recalls[String(base)]||0)>=10;
+  const revDone=(S.recalls[base+'r']||0)>=10;
+  const mastered=lm==='both'?(fwdDone&&revDone):lm==='toSpanish'?revDone:fwdDone;
+  if(mastered&&!S.knownIds.includes(base))S.knownIds.push(base);
   // Record in history
   const t=todayStr();
   if(!S.history)S.history={};
@@ -1594,7 +1630,13 @@ function markKnew(idx){anim('swipe-r',()=>{
   save();renderToday();
 })}
 function markAgain(idx){anim('swipe-l',()=>{S.todayQueue=S.todayQueue.filter(i=>i!==idx);S.todayAgain=S.todayAgain.filter(i=>i!==idx);S.todayQueue.push(idx);save();renderToday()})}
-function addMore(){const used=new Set([...S.todayDone,...S.todayQueue,...S.todayAgain]);S.todayQueue=shuf(ALL.map((_,i)=>i).filter(i=>!used.has(i))).slice(0,10);save();renderToday()}function speak(t){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=0.85;window.speechSynthesis.speak(u)}
+function addMore(){
+  const lmx=S.langMode||'both';let poolx=[];
+  if(lmx==='both'||lmx==='toEnglish')poolx.push(...ALL.map((_,i)=>i));
+  if(lmx==='both'||lmx==='toSpanish')poolx.push(...ALL.map((_,i)=>i+10000));
+  const used=new Set([...S.todayDone,...S.todayQueue,...S.todayAgain]);
+  S.todayQueue=shuf(poolx.filter(v=>!used.has(v))).slice(0,10);save();renderToday();
+}function speak(t){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';u.rate=0.85;window.speechSynthesis.speak(u)}
 function esc(s){return s.replace(/'/g,"\\'")}
 
 // ── BROWSE ──
@@ -1648,6 +1690,57 @@ function setChartMode(mode){
   document.getElementById('chart-daily-btn').classList.toggle('active',mode==='daily');
   document.getElementById('chart-monthly-btn').classList.toggle('active',mode==='monthly');
   drawChart();
+  drawPie();
+}
+
+function drawPie(){
+  const canvas=document.getElementById('mastery-pie');
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const size=160;
+  canvas.style.width=size+'px';canvas.style.height=size+'px';
+  canvas.width=size*dpr;canvas.height=size*dpr;
+  const c=canvas.getContext('2d');c.scale(dpr,dpr);
+  const cx=size/2,cy=size/2,r=size/2-6;
+  if(!S.recalls)S.recalls={};
+  let bothMastered=0,fwdOnly=0,revOnly=0,neither=0;
+  ALL.forEach((_,i)=>{
+    const fwd=(S.recalls[String(i)]||0)>=10;
+    const rev=(S.recalls[i+'r']||0)>=10;
+    if(fwd&&rev)bothMastered++;
+    else if(fwd)fwdOnly++;
+    else if(rev)revOnly++;
+    else neither++;
+  });
+  const total=ALL.length;
+  const slices=[
+    {val:bothMastered,color:'#F47820',label:'Both mastered'},
+    {val:fwdOnly,color:'#1565C0',label:'Spanish → English only'},
+    {val:revOnly,color:'#42A5F5',label:'English → Spanish only'},
+    {val:neither,color:'#e8e8e8',label:'Not yet mastered'},
+  ];
+  let angle=-Math.PI/2;
+  slices.forEach(s=>{
+    if(s.val===0)return;
+    const sweep=(s.val/total)*Math.PI*2;
+    c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,angle,angle+sweep);c.closePath();
+    c.fillStyle=s.color;c.fill();
+    angle+=sweep;
+  });
+  // centre hole
+  c.beginPath();c.arc(cx,cy,r*0.52,0,Math.PI*2);c.fillStyle='#fff';c.fill();
+  // centre text
+  c.fillStyle='#1565C0';c.font='bold 18px Poppins,sans-serif';c.textAlign='center';c.textBaseline='middle';
+  c.fillText(bothMastered,cx,cy-8);
+  c.fillStyle='#888';c.font='9px DM Sans,sans-serif';
+  c.fillText('both ways',cx,cy+8);
+  // legend
+  const legend=document.getElementById('pie-legend');
+  if(legend){
+    legend.innerHTML=slices.filter(s=>s.val>0).map(s=>
+      `<div class="pie-legend-item"><div class="pie-dot" style="background:${s.color}"></div>${s.label}: <strong>${s.val}</strong></div>`
+    ).join('');
+  }
 }
 
 function renderProgress(){
